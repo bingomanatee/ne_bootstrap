@@ -1,11 +1,10 @@
+<h2>Welcome to Nuby Bootstrap</h2>
 
-<h2>Home Template</h2>
-<p>Expand on this for your site.</p>
-<p>Hello, <%= name %>!</p>
-<form method="get" action="/">
-    <label>Name</label>
-    <input name="name" value="<%= name %>" type="text"/>
-    <button type="submit">Talk to me </button>
-</form>
-<hr />
-<p><a href="/make">Site Maker</a> | <a href="/admin/model/list">Model Admin</a></p>
+        <p>This page is designed to show the mutability of the template for hiding and showing panels: </p>
+
+        <form method="get" aciton="/">
+            <label><input type="checkbox" name="nav" <% if (nav){%> checked="checked"<% } %> /> Navigation </label>
+            <label><input type="checkbox" name="sidebar" <% if (sidebar){%> checked="checked"<% } %>  /> Sidebar </label>
+            <label><input type="checkbox" name="hero" <% if (hero){%> checked="checked"<% } %>  /> Hero </label>
+            <button type="submit">Show Elements</button>
+        </form>

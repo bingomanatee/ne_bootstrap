@@ -1,24 +1,37 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar">What am I?</span>
-                <span class="icon-bar">and I?</span>
-                <span class="icon-bar">and I?</span>
-            </a>
-            <a class="brand" href="#">NE Twitter Bootstrap</a>
+            <a class="brand" href="#">Nuby Express Bootstrap Nav</a>
 
             <div class="nav-collapse collapse">
-                <p class="navbar-text pull-right">
-                    Logged in as <a href="#" class="navbar-link">Username</a>
-                </p>
+
                 <ul class="nav">
-<% items.forEach(function(item)){ %>
-                    <li class="active"><a href="<%- item.link %>"><%- item.title %></a></li>
-<% }) %>
+                    <% nav.forEach(function(nav_item){ %>
+                    <% if (nav_item.dropdown){%>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <%- nav_item.title %>
+                            <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <% nav_item.links.forEach(function(link){ %>
+                            <li><a href="<%- link.link %>"><%- link.title %></a></li>
+                            <% }) // end nav.forEach
+                            %>
+                        </ul>
+                    </li>
+                    <% } else { %>
+                    <li>
+                        <a href="<%- nav_item.link %>" class="nav"><%- nav_item.title %></a>
+                    </li>
+                    <% } // end dropdown check
+                    %>
+                    <% }) // end nav_item.forEach
+                    %>
                 </ul>
+                <!-- /.nav -->
             </div>
-            <!--/.nav-collapse -->
+            <!-- /.nav-collapse -->
         </div>
     </div>
+    <!-- /navbar-inner -->
 </div>

@@ -32,28 +32,38 @@
           href="/ne_bs/img/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed"
           href="/ne_bs/img/ico/apple-touch-icon-57-precomposed.png">
+
+    <!-- really? this is the way to go? sigh... -->
+    <style type="text/css">
+
+@media (min-width: 979px) {
+       body {
+         padding-top: 60px;
+         padding-bottom: 40px;
+       }
+       .sidebar-nav {
+         padding: 9px 0;
+       }
+}
+     </style>
 </head>
 <body>
 <% if (nav) { %>
-<%- partial("nav.html", nav) %>
+<%- partial("nav.html", {nav: nav}) %>
 <% } %>
 
 <div class="container-fluid">
     <div class="row-fluid">
-<% if (sidebar ){ %>
-        <div class="span3">
-          <%= partial("sidebar_well.html", sidebar) %>
-        </div>
-        <!--/span-->
+        <% if (sidebar){%>
+            <%- partial('sidebar.html', {sidebar: sidebar}) %>
+        <% } // sidebar %>
         <div class="span9">
-<% } else { %>
-            <div class="span12">
-<% } %>
-<% if (hero){ %>
-<%- partial("hero.html", hero) %>
-<% } %>
-            <div class="row-fluid"><%- body %></div>
-            <!--/row-->
+
+            <% if (hero) {%>
+            <%- partial('hero.html', {hero: hero}) %>
+            <% } //  hero
+            %>
+          <%- body %>
         </div>
         <!--/span-->
     </div>
@@ -62,7 +72,7 @@
     <hr>
 
     <footer>
-        <p>&copy; Your Company Name <%= new Date().getFulYear() %></p>
+        <p>&copy; Your Company Name <%= new Date().getFullYear() %></p>
     </footer>
 
 </div>
