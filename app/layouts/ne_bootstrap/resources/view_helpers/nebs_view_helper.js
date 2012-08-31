@@ -5,7 +5,7 @@ module.exports = {
             if (!input.hasOwnProperty(t)) {
                 input[t] = false;
             }
-            cb();
         })
+        cb();
     }
 }
