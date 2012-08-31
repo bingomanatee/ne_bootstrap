@@ -1,0 +1,38 @@
+<h1>Options</h1>
+<p>Options are defined in component configuration files and can be adjusted on the fly to customize your site.</p>
+
+<div class="well-large">
+    <%- partial(helpers.nebsavr + '/data_table.html', data_table_config) %>
+</div>
+
+
+<!-- Modal -->
+<div class="modal" id="edit_option_modal" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     style="display: none"
+        >
+</div>
+
+<script language="javascript">
+
+    function form_data() {
+        var sd = $('#edit_option_modal form').serializeArray();
+        return _.reduce(sd, function (m, f) {
+            m[f.name] = f.value;
+            return m;
+        }, {})
+    }
+
+    function edit_name(name) {
+        $('#edit_option_modal').load('/admin/option/' + name + '/edit', function () {
+
+            $('#edit_option_modal form').submit(function () {
+                var d = form_data();
+
+                $.post('/admin/option/' + name + '/edit', d, function (result){
+                    console.log('result: ', result);
+                })
+            })
+        })
+    }
+</script>
