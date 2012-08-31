@@ -31,7 +31,10 @@
 
                 $.post('/admin/option/' + name + '/edit', d, function (result){
                     console.log('result: ', result);
+                    document.location.reload();
                 })
+
+               return false;
             })
         })
     }

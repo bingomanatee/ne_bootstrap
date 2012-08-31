@@ -14,6 +14,31 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
+<% if (nav){ // this is a pretty lame hack, Twitter...
+ %>
+    <style type="text/css">
+
+    @media (min-width: 979px) {
+       body {
+         padding-top: 60px;
+         padding-bottom: 40px;
+       }
+       .sidebar-nav {
+         padding: 9px 0;
+       }
+    }
+     </style>
+    <% } else { %>
+    <style type="text/css">
+       body {
+         padding-top: 1em;
+         padding-bottom: 1em;
+       }
+       .sidebar-nav {
+         padding: 9px 0;
+       }
+     </style>
+    <% } %>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <!-- Stylesheets -->
@@ -33,19 +58,6 @@
     <link rel="apple-touch-icon-precomposed"
           href="/ne_bs/img/ico/apple-touch-icon-57-precomposed.png">
 
-    <!-- really? this is the way to go? sigh... -->
-    <style type="text/css">
-
-@media (min-width: 979px) {
-       body {
-         padding-top: 60px;
-         padding-bottom: 40px;
-       }
-       .sidebar-nav {
-         padding: 9px 0;
-       }
-}
-     </style>
 </head>
 <body>
 <% if (nav) { %>
@@ -55,9 +67,13 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <% if (sidebar){%>
+        <div class="span2">
             <%- partial('sidebar.html', {sidebar: sidebar}) %>
-        <% } // sidebar %>
+        </div>
         <div class="span10">
+        <% } else { %>
+        <div class="span12">
+        <% } // sidebar %>
 
             <% if (hero) {%>
             <%- partial('hero.html', {hero: hero}) %>

@@ -41,7 +41,7 @@ module.exports = {
         var name = rs.req_props.name;
         var value = rs.req_props.value;
         var target = this.models.site_options.db.find(function (i) {
-            return i.name == name;
+            return i.get('name') == name;
         });
 
         if (target) {
