@@ -42,6 +42,7 @@ function _get_option(name, cb, frame) {
 module.exports = {
     init:function (frame, cb) {
         console.log('option reader');
+        var options_model = frame.get_resource('model', 'site_options');
 
         NE.Action.prototype.get_option = function (name, callback) {
             _get_option(name, callback, frame);
@@ -54,79 +55,15 @@ module.exports = {
         if (_DEBUG)  console.log('%s controllers found', controllers.length);
 
         controllers.forEach(function (con) {
-            var ro = _refresh_options(frame, con);
-            if (ro && _.isArray(ro)) {
-                config_file_options = config_file_options.concat(ro);
-            }
+            options_model.read_resource_options(con);
         })
 
         frame.get_components().forEach(function (com) {
-            var ro = _refresh_options(frame, com);
-            if (ro && _.isArray(ro)) {
-                config_file_options = config_file_options.concat(ro);
-            }
+            options_model.read_resource_options(com);
         })
 
-        var ls = frame.get_resources('layout');
-        console.log('%s layouts', ls.length);
-        ls.forEach(function(layout){
-            var ro = _refresh_options(frame, layout);
-            console.log('layout %s resources: %s', layout.name, util.inspect(ro));
-            if (ro && _.isArray(ro)) {
-                config_file_options = config_file_options.concat(ro);
-            }
-        })
+        cb();
 
-        if (_DEBUG || _DEBUG_OPTIONS) console.log('inspecting cc options %s', util.inspect(config_file_options));
-
-        var options_model = frame.get_resource('model', 'site_options');
-
-        var gate = new Gate(cb, 'loading cc options %s', util.inspect(config_file_options));
-        gate.debug = false;
-
-        options_model.active(function (err, saved_options) {
-            if (_DEBUG) console.log('saved options: %s', util.inspect(saved_options));
-
-            config_file_options.forEach(function (config_file_option) {
-                if (_DEBUG) console.log('investigating config %s', util.inspect(config_file_option))
-                var saved_option = _.find(saved_options, function (saved_option) {
-                    if (_DEBUG) console.log('comparing it to saved option %s', util.inspect(saved_option.toJSON()));
-                    return (saved_option.name == config_file_option.name)
-                        && (saved_option.class == config_file_option.class);
-                });
-                if (_DEBUG) console.log('option exists: %s', util.inspect(saved_option));
-                if (saved_option) {
-                    var cc_value = _.clone(config_file_option);
-                    if (_.isNull(saved_option.value)) {
-                        cc_value.value = cc_value.default;
-                    } else {
-                        delete config_file_option.value;
-                    }
-                    _.extend(saved_option, cc_value);
-                    saved_option.save(gate.task_done_callback(true));
-
-                } else {
-                    if (_DEBUG) console.log('putting options ', config_file_option);
-                    if (config_file_option){
-                        config_file_option.value = config_file_option.default;
-                    }
-                    gate.task_start();
-                    options_model.put(config_file_option,
-                        function (err, result) {
-                            if (err) {
-                                if (_DEBUG) console.log('ERR saving option: %s', util.inspect(err));
-                            } else {
-                                if (_DEBUG) console.log('SAVED option: %s', util.inspect(result));
-                            }
-                            gate.task_done();
-                        }
-                    );
-                }
-
-            });
-
-            gate.start();
-        });
     }
 }
 

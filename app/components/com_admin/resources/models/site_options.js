@@ -73,9 +73,9 @@ var _model = mm.create(schema,
             if (opts && _.isArray(opts)) {
                 opts.forEach(function (opt) {
                     opt.src = src.path;
-                    console.log('reading resource option %s', util.inspect(opt));
                     _model.find_one({name:opt.name}, function (err, opt_record) {
-                        if (!opt_record) {
+                        if (opt_record) {
+                        } else {
                             _model.put(opt, function (err, saved_new_record) {
                                 if (err) {
                                     throw err;
@@ -92,18 +92,17 @@ var _model = mm.create(schema,
 
         cache:false,
 
-        get_cache: function(cb){
-            if (cb){
-                _model.active(function(err, options){
-                    if (err){
+        get_cache:function (cb) {
+            if (cb) {
+                _model.active(function (err, options) {
+                    if (err) {
                         return cb(err);
                     }
-                   _model.cache = {}; // wipe out any leftover / legacy
-                    options.forEach(function(option){
-                       _model.cache[option.name] = option.value;
+                    _model.cache = {}; // wipe out any leftover / legacy
+                    options.forEach(function (option) {
+                        _model.cache[option.name] = option.value;
                     });
 
-                    console.log('cache read: %s', util.inspect(_model.cache));
                     cb(null, _model.cache);
                 })
             } else {

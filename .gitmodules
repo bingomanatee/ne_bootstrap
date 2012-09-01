@@ -1,0 +1,3 @@
+[submodule "app/components/com_layout"]
+	path = app/components/com_layout
+	url = git@github.com:bingomanatee/com_layout.git
