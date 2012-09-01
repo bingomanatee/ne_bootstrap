@@ -6,3 +6,8 @@
 .idea/workspace.xml
 
 .idea/workspace.xml
+
+*.log
+/logs/nuby_express.log
+/.idea/vcs.xml
+/.idea/misc.xml

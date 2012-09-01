@@ -20,11 +20,14 @@ module.exports = {
     },
 
     on_get_process:function (rs, name) {
-        var target = this.models.site_options.db.find(function (i) {
-            return i.get('name') == name;
+        var self = this;
+        var target = this.models.site_options.option_value(name, function(err, value){
+            if (err){
+                self.emit('process_error', rs, err);
+            } else {
+                self.on_output(rs, {name: name, value: value});
+            }
         })
-
-        this.on_output(rs, target.toJSON());
     },
 
     /* ************* POST ************** */
@@ -38,22 +41,21 @@ module.exports = {
     },
 
     on_post_input:function (rs) {
-        var name = rs.req_props.name;
-        var value = rs.req_props.value;
-        var target = this.models.site_options.db.find(function (i) {
-            return i.get('name') == name;
-        });
-
-        if (target) {
-            this.on_post_process(rs, target, value);
-        } else {
-            this.emit('input_error', rs, 'cannot find site option ' + name);
-        }
+        this.on_post_process(rs, rs.req_props);
     },
 
-    on_post_process:function (rs, target, value) {
-        target.set('value', value);
-        rs.send({site_option:target.toJSON(), saved:true, error:false});
+    on_post_process:function (rs, option) {
+        var self = this;
+
+        var options = {};
+        options[option.name] = option.value;
+        this.models.site_options.set_options(options, function(err, saved){
+            if (err){
+                self.emit('process_error', rs, err);
+            } else {
+                rs.send({saved: saved, error: false});
+            }
+        });
     },
 
     _on_post_error_go:true

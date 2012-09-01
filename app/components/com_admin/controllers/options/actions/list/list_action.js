@@ -17,8 +17,14 @@ module.exports = {
     },
 
     on_input:function (rs) {
-        var options = this.models.site_options.db.toJSON();
-        this.on_process(rs, {site_options:options})
+        var self = this;
+        this.models.site_options.all(function (err, options) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else {
+                self.on_process(rs, {site_options:options})
+            }
+        })
     },
 
     on_process:function (rs, input) {
@@ -27,9 +33,9 @@ module.exports = {
             title:'Site Options',
             data:input.site_options,
             columns:[
-                {label:'Name', field:'name', width: '12em'},
+                {label:'Name', field:'name', width:'12em'},
                 {label:'Value', field:'value'},
-                {label: '&nbsp;', template: _edit_button}
+                {label:'&nbsp;', template:_edit_button}
             ]}
 
         self.on_output(rs, input);
