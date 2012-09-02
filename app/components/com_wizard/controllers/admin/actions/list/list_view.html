@@ -1,0 +1,451 @@
+<script type="text/javascript">
+    var coms = <%- JSON.stringify(coms) %>;
+</script>
+
+<h1>Wizards</h1>
+
+<div ng-app="wizards">
+
+<div ng-controller="WizardsCtrl" style="position: relative">
+
+<div class="overlay" ng-show="show_preview" style="display: none">
+
+    <figure>
+        <h1>Rendered View of Wizard &quot;{{ view_wizard.title }}&quot;</h1>
+
+        <iframe id="#wizard_view" src="{{ preview_url }}" width="90%" height="400">
+
+        </iframe>
+
+        <form class="dialog_form">
+            <button ng-click="show_preview=false">OK</button>
+        </form>
+    </figure>
+</div>
+
+<div class="overlay" ng-show="publish_wizard_show" style="display: none" id="publish_wizard">
+
+</div>
+
+<div class="overlay" ng-show="show_new_step" style="display: none" id="show_new_step">
+
+</div>
+
+<div class="overlay" ng-show="show_edit_step" style="display: none" id="show_edit_step">
+
+</div>
+
+<div class="overlay" ng-show="show_new_wizard" style="display: none">
+    <figure>
+        <h1>Create Wizard</h1>
+
+        <form class="dialog_form" id="new_wizard_form">
+            <table>
+                <tr>
+                    <th><label>Name</label></th>
+                    <td><input type="text" name="name" ng-model="new_wizard.name" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Title</label></th>
+                    <td><input type="text" name="title" ng-model="new_wizard.title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Description</label></th>
+                    <td><textarea name="notes" class="wide" ng-model="new_wizard.notes"></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th><label>Content Type</label></th>
+                    <td>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_wizard.content_type"
+                                                                                value="text"/>Text</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_wizard.content_type"
+                                                                                value="html"/>HTML</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_wizard.content_type"
+                                                                                value="json"/>JSON</label>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label>Content</label></td>
+                    <td>
+                        <textarea name="content" class="wide" ng-model="new_wizard.content"></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th><label>Definition Path</label></th>
+                    <td><input type="text" name="def_path" class="wide" ng-model="new_wizard.def_path"/></td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <button type="submit" ng-click="create_wizard(new_wizard)">Create Wizard</button>
+                        <button type="reset" ng-click="close_dlog('new_wizard')">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </figure>
+</div>
+
+<div class="overlay" ng-show="show_edit_wizard" style="display: none">
+
+    <figure>
+        <h1>Edit Wizard Wizard</h1>
+
+        <form class="dialog_form" id="edit_wizard_form">
+            <table>
+                <tr>
+                    <th><label>Name</label></th>
+                    <td><input type="text" name="name" ng-model="edit_wizard.name" class="wide"/></td>
+                </tr>
+                <tr>
+                    <th><label>Title</label></th>
+                    <td><input type="text" name="title" ng-model="edit_wizard.title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Description</label></th>
+                    <td><textarea name="notes" class="wide" ng-model="edit_wizard.notes"></textarea>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th><label>Content Type</label></th>
+                    <td>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_wizard.content_type"
+                                                                                value="text"/>Text</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_wizard.content_type"
+                                                                                value="html"/>HTML</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_wizard.content_type"
+                                                                                value="json"/>JSON</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Content</label></td>
+                    <td>
+                        <textarea name="content" class="wide" ng-model="edit_wizard.content"></textarea>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th><label>Definition Path</label></th>
+                    <td><input type="text" name="def_path" class="wide" ng-model="edit_wizard.def_path"/></td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <button type="submit" ng-click="update_wizard(edit_wizard)">Update Wizard</button>
+                        <button type="reset" ng-click="close_dlog('edit_wizard')">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </figure>
+</div>
+<p>*The Wizard &quot;name&quot; is a key used in urls - so ideally, no spaces, special chars.</p>
+<table class="datagrid_nh" style="width: 100%">
+    <thead>
+    <tr>
+        <td colspan="{{colspan}}" class="controls">
+            Search <input ng-model="query" type="text" value="" class="search_field"/>
+        </td>
+    </tr>
+    <tr>
+        <th>Name*</th>
+        <th>Title</th>
+        <th colspan="{{colspan - 2 }}">&nbsp;</th>
+    </tr>
+    </thead>
+
+    <tbody ng-repeat="wizard in wizards | filter: query ">
+    <tr>
+        <td><b>{{ wizard.name }}</b></td>
+        <td><b>{{ wizard.title }}</b></td>
+
+        <td class="control">
+            <button class="edit" ng-click="edit_wizard(wizard)"><span class="icon"></span> Edit Wizard</button>
+        </td>
+        <td class="control">
+            <button class="delete" ng-click="delete_wizard(wizard)"><span class="icon"></span> Delete Wizard
+            </button>
+        </td>
+        <td class="control">
+            <button class="view" ng-click="preview(wizard)"><span class="icon"></span> View
+            </button>
+        </td>
+        <td class="control">
+            <button class="add" ng-click="publish(wizard)"><span class="icon"></span> As Controller
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="{{ colspan -1}}">{{wizard.notes }}</td></tr>
+    <tr>
+
+        <td colspan="{{ colspan }}" style="padding-left: 3em; background-color: rgb(200,200,150)">
+            <table class="datagrid_nh" width="100%" style="border: 1px solid black">
+                <thead>
+                <tr>
+                    <th>Name*</th>
+                    <th>Title</th>
+                    <th>Order</th>
+                    <td class="control" style="border-bottom: 1px solid black">
+                        <button class="new" ng-click="add_step(wizard)">
+                            <span class="icon"></span>
+                            Add Step
+                        </button>
+                    </td>
+                    <td class="control" style="border-bottom: 1px solid black">
+                        <button class="edit" ng-click="seq_order(wizard)">
+                            <span class="icon"></span>
+                            Sequential Orders
+                        </button>
+                    </td>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="step in wizard_steps(wizard) | orderBy: 'order'">
+                    <td>{{ step.name }}</td>
+                    <td><b>{{ step.title }}</b></td>
+
+                    <td style="padding:0px"><input type="text" ng-model="step.order" style="width: 2em; margin: 0px"
+                                                   ng-change=save_step(step)/></td>
+                    <td class="control">
+                        <button class="edit" ng-click="change_step(step, wizard)"><span class="icon"></span> Edit Step
+                        </button>
+                    </td>
+                    <td class="control">
+                        <button class="delete" ng-click="delete_step(step)"><span class="icon"></span> Delete Step
+                        </button>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+
+    <tr>
+        <td colspan="{{colspan}}" class="controls">
+            <button class="add" ng-click="add_wizard()">Add Wizard</button>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+</div>
+</div>
+<p>The data here reflects information in the repository, not that in the wizard configuration files themselves. </p>
+
+<script type="text/ng-template" id="new_step_template">
+
+    <figure>
+        <h1>Add Step for Wizard &quot;{{ new_step_wizard.title }}&quot;</h1>
+
+        <form class="dialog_form" id="new_step_form">
+            <table>
+                <tr>
+                    <th><label>Title</label></th>
+                    <td><input type="text" name="title" ng-model="new_step.title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Breadcrumb Title</label></th>
+                    <td><input type="text" name="bc_title" ng-model="new_step.bc_title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Name</label></th>
+                    <td><input type="text" name="title" ng-model="new_step.name" class="wide"/></td>
+                </tr>
+
+
+                <tr>
+                    <th><label>Description</label></th>
+                    <td><textarea name="notes" class="wide" ng-model="new_step.notes"></textarea>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th><label>Content Type</label></th>
+                    <td>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_step.content_type"
+                                                                                ng-change="new_step_content_change(new_step.content_type)"
+                                                                                value="text"/>Text</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_step.content_type"
+                                                                                value="html"/>HTML</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="new_step.content_type"
+                                                                                value="json"/>JSON</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Content</label></td>
+                    <td>
+                        <label style="width: auto; color: black; text-align: left">
+                            <input type="checkbox" ng_model="new_step_content_html_checked" value="1"
+                                   ng-change="html_editor('new_step_content', new_step)"/>
+                            HTML editor (CKeditor)</label>
+                        <textarea name="content" id="new_step_content" class="wide"
+                                  ng-model="new_step.content"></textarea>
+                        <textarea name="content" id="new_step_content_html" class="wide"
+                                  style="display: none;"></textarea>
+                        <br/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <button type="submit" ng-click="create_step(new_step)">Add Step</button>
+                        <button type="reset" ng-click="close_dlog('new_step')">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </figure>
+
+
+</script>
+
+<script type="text/ng-template" id="publish_wizard_template">
+    <figure>
+        <h1>Publish Wizard as a Controller</h1>
+
+        <p>Your wizard will be expressed as a controller. Note that this can be destructive if executed more than once.
+            If you want to "revise" a previously published wizard, change the wizard name and do your surgery
+            later. </p>
+
+
+        <form class="dialog_form" id="edit_step_form">
+            <table>
+                <tr>
+                    <th><label>Destination component</label></th>
+                    <td><select name="component" ng:model="export_component">
+                        <option ng-repeat="com in coms" value="{{com.name }}">{{ com.name }}</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <button ng-click="export_wizard()" type="submit">Export Wizard</button>
+                    <button ng-click="publish_wizard_show = false">Cancel</button>
+
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </figure>
+
+</script>
+
+<script type="text/ng-template" id="edit_step_template">
+    <figure>
+        <h1>Editing Step for Wizard &quot;{{ edit_step_wizard.title }}&quot;</h1>
+
+        <form class="dialog_form" id="edit_step_form">
+            <table>
+                <tr>
+                    <th><label>Title</label></th>
+                    <td><input type="text" name="title" ng-model="edit_step.title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Breadcrumb Title</label></th>
+                    <td><input type="text" name="bc_title" ng-model="edit_step.bc_title" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Name</label></th>
+                    <td><input type="text" name="title" ng-model="edit_step.name" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th><label>Description</label></th>
+                    <td><textarea name="notes" class="wide" ng-model="edit_step.notes"></textarea>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th><label>Content Type</label></th>
+                    <td>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_step.content_type"
+                                                                                value="text"/>Text</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_step.content_type"
+                                                                                value="html"/>HTML</label>
+                        <label style="display: inline-block; width: 5em"><input type="radio"
+                                                                                ng-model="edit_step.content_type"
+                                                                                value="json"/>JSON</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Content</label></td>
+                    <td>
+                        <label style="width: auto; color: black; text-align: left">
+                            <input type="checkbox" ng_model="edit_step_content_html_checked" value="1"
+                                   ng-change="html_editor('edit_step_content', edit_step)"/>
+                            HTML editor (CKeditor)</label>
+                        <textarea name="content_html" id="edit_step_content_html" class="wide"
+                                  style="display: none"></textarea>
+                        <textarea name="content" id="edit_step_content" class="wide"
+                                  ng-model="edit_step.content"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label>Order</label></th>
+                    <td><input type="text" name="order" ng-model="edit_step.order" class="wide"/></td>
+                </tr>
+
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>
+                        <button type="submit" ng-click="update_step(edit_step)">Update Step</button>
+                        <button type="reset" ng-click="close_dlog('edit_step')">Cancel</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </figure>
+
+</script>
+
+<style>
+    div.overlay {
+        width: auto;
+        position: absolute;
+        padding- 2em;
+        left: 0px;
+        top: 0px;
+    }
+
+    div.overlay figure {
+        border: 2px solid black;
+        -webkit-box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.33);
+        box-shadow: 10px 10px 20px 5px rgba(0, 0, 0, 0.33);
+        width: 100%
+    }
+</style>

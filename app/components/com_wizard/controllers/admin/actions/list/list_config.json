@@ -1,0 +1,22 @@
+{
+    "method":"*",
+
+    "get_route":"*s",
+
+    "post_route": "*s/:wizard_name",
+
+    "javascript":[
+        {
+            "/js/libs/angular":[
+                "angular-1.0.1.js",
+                "angular-resource-1.0.1.js"
+            ]
+        },
+        "/js/libs/underscore/underscore-min.js",
+        "/admin/js/wizards/wizards.js",
+        "/js/wizard_support/ckeditor/ckeditor.js"
+    ],
+
+    "overwrite": true
+
+}

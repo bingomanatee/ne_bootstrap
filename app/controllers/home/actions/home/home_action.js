@@ -6,7 +6,28 @@ module.exports = {
     },
 
     on_input:function (rs) {
-        this.on_process(rs, rs.req_props);
+        var self = this;
+        this.models.wizard_state.get_state(function(err, state){
+            if (state != 'done'){
+                rs.flash('error', 'You need to complete the <a href="/init_site">Site Wizard</a>.');
+
+                rs.req_props.hero = {
+                    more:{
+                        title:'Start Site Wizard',
+                        link:'/init_site'
+                    },
+                    title:'Please complete the site wizard',
+                    text:'Where have all good men gone <br />' +
+                        'And where are all the gods? <br />' +
+                        'Where’s the street-wise Hercules <br />' +
+                        'To fight the rising odds? <br />' +
+                        ' <br />' +
+                        'Isn’t there a white knight upon a fiery steed? <br />' +
+                        'Late at night I toss and turn and dream of what I need'
+                }
+            }
+            self.on_process(rs, rs.req_props);
+        }, 'init_site', 'wizard') ;
     },
 
     on_process:function (rs, input) {
@@ -16,7 +37,7 @@ module.exports = {
             input.name = 'World';
         }
         /* ************* SIDEBER ****** */
-
+            // note - this is a "proof of concept" that is sabotoged by the layout sidebar helper.
 
         if (input.sidebar) {
             input.sidebar = [
@@ -46,24 +67,6 @@ module.exports = {
             ]
         }
 
-        /* *********** HERO ************* */
-
-        if (input.hero) {
-            input.hero = {
-                more:{
-                    title:'Xena Warrior Princess',
-                    link:'/xena'
-                },
-                title:'I need a hero',
-                text:'Where have all good men gone <br />' +
-                    'And where are all the gods? <br />' +
-                    'Where’s the street-wise Hercules <br />' +
-                    'To fight the rising odds? <br />' +
-                    ' <br />' +
-                    'Isn’t there a white knight upon a fiery steed? <br />' +
-                    'Late at night I toss and turn and dream of what I need'
-            }
-        }
 
         if (_DEBUG) console.log('outputting %s', util.inspect(input))
         this.on_output(rs, input);

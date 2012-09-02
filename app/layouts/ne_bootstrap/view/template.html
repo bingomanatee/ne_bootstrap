@@ -62,13 +62,14 @@
         <div class="span10">
         <% } else { %>
         <div class="span12">
-        <% } // sidebar %>
+        <% } // sidebar
+            %>
 
+            <%- helpers.flash() %>
             <% if (hero) {%>
             <%- partial('hero.html', {hero: hero}) %>
             <% } //  hero
             %>
-            <%- helpers.flash() %>
           <%- body %>
         </div>
         <!--/span-->
