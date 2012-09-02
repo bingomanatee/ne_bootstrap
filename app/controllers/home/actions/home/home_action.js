@@ -1,5 +1,5 @@
 var util = require('util');
-var _DEBUG = true;
+var _DEBUG = false;
 module.exports = {
     on_validate:function (rs) {
         this.on_input(rs);

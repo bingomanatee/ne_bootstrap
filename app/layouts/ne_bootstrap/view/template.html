@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
+    <title><%= layout_options.site_title %></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
@@ -36,16 +36,17 @@
     <!-- really? this is the way to go? sigh... -->
     <style type="text/css">
 
-@media (min-width: 979px) {
-       body {
-         padding-top: 60px;
-         padding-bottom: 40px;
-       }
-       .sidebar-nav {
-         padding: 9px 0;
-       }
-}
-     </style>
+        @media (min-width: 979px) {
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+
+            .sidebar-nav {
+                padding: 9px 0;
+            }
+        }
+    </style>
 </head>
 <body>
 <% if (nav) { %>
@@ -55,14 +56,19 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <% if (sidebar){%>
+        <div class="span2">
             <%- partial('sidebar.html', {sidebar: sidebar}) %>
+        </div>
+        <div class="span10">
+        <% } else { %>
+        <div class="span12">
         <% } // sidebar %>
-        <div class="span9">
 
             <% if (hero) {%>
             <%- partial('hero.html', {hero: hero}) %>
             <% } //  hero
             %>
+            <%- helpers.flash() %>
           <%- body %>
         </div>
         <!--/span-->
@@ -72,11 +78,17 @@
     <hr>
 
     <footer>
-        <p>&copy; Your Company Name <%= new Date().getFullYear() %></p>
+        <p style="text-align: center">&copy; <%= layout_options.company_name %> <%= new Date().getFullYear() %></p>
     </footer>
 
 </div>
 <!--/.fluid-container-->
+
+
+<!-- Modal -->
+<div class="modal" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none" >
+</div>
+
 <!--[if lt IE 7]>
 <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser
     today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better

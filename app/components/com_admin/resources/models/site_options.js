@@ -21,18 +21,6 @@ var schema = new mongoose.Schema({
     deleted:{type:Boolean, default:false}
 });
 
-schema.statics.active = function (cb) {
-    return this.find({'$nor':[
-        {deleted:true}
-    ]}).run(cb);
-}
-
-schema.statics.inactive = function (cb) {
-    return this.find({'$nor':[
-        {deleted:true}
-    ]}).run(cb);
-}
-
 var _model = mm.create(schema,
     {
         name:"site_options",

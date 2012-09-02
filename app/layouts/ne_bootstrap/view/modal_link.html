@@ -1,0 +1,8 @@
+<a href="#" data-toggle="modal" onclick="$('#modal').load(
+'<%- link.modal %>',
+ function(){
+ <% if (link.script) { %>
+ $.getScript('<%- link.script %>');
+  <% } %>
+  $('#modal').show();
+  }); return false">

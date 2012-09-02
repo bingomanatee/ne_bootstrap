@@ -16,6 +16,12 @@
             "data_type":"string",
             "default":"My Site",
             "notes":"useful for site layouts"
+        },
+        {
+            "name":"company_name",
+            "data_type":"string",
+            "default":"My Company",
+            "notes":"in the footer, by the copyright notice."
         }
     ]
 }

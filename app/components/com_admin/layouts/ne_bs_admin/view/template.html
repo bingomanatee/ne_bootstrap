@@ -79,6 +79,7 @@
             <%- partial('hero.html', {hero: hero}) %>
             <% } //  hero
             %>
+            <%- helpers.flash() %>
           <%- body %>
         </div>
         <!--/span-->
@@ -88,7 +89,7 @@
     <hr>
 
     <footer>
-        <p>&copy; Your Company Name <%= new Date().getFullYear() %></p>
+        <p style="text-align: center">&copy; <%= layout_options.company_name %> <%= new Date().getFullYear() %></p>
     </footer>
 
 </div>

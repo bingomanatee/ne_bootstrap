@@ -5,14 +5,18 @@ var _ = require('underscore');
 module.exports = {
     weight:100,
     init:function (rs, input, cb) {
-        var ln = rs.action.get_config('layout_name');
-      if (_DEBUG) {
-          console.log('input: %s', util.inspect(input));
-          console.log('layout name: %s', ln);
-      }
-        if (!(ln == 'ne_bs_admin')){
+
+        var ln = false;
+        if (input.hasOwnProperty('layout_name') && input.layout_name) {
+            ln = input.layout_name
+        } else {
+            ln = rs.action.get_config('layout_name', false);
+        }
+
+        if (!(ln == 'ne_bs_admin')) {
             return cb();
         }
+
         ['nav', 'sidebar', 'hero'].forEach(function (t) {
 
             if (!input.hasOwnProperty(t)) {
@@ -23,7 +27,8 @@ module.exports = {
         input.sidebar = [
             {  title:'Administration',
                 links:[
-                    {link:'/admin/home', title:'Home'},
+                    {link: '/', title: 'Site Home'},
+                    {link:'/admin/home', title:'Admin home'},
                     {link:'/admin/options', title:'Options'}
                 ]}
         ];
