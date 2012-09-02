@@ -42,6 +42,22 @@ var model_def = {
             }
 
         })
+    },
+
+    options: function(checked, cb){
+        this.active(function(err, roles){
+            if (err){
+                return cb(err);
+            } else {
+                var options = _.map(roles, function(role){
+                    return {
+                        name: role.name,
+                        checked:_.include(checked, role.name)
+                    };
+                });
+                cb(null, options);
+            }
+        })
     }
 
 };

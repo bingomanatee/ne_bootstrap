@@ -44,7 +44,6 @@
                 var d = form_data();
 
                 $.post('/admin/member_role/0/new', d, function (result) {
-                    console.log('result: ', result);
                     document.location.reload();
                 })
             } catch(err){

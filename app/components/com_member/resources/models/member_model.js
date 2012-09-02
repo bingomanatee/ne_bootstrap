@@ -6,11 +6,6 @@ var _ = require('underscore');
 var _member_signin = require('member_signin');
 var _member_auth = require('member_auth');
 
-var role_schema = new mongoose.Schema({
-    name:String,
-    tasks:[String]
-});
-
 var schema = new mongoose.Schema({
     real_name:String,
     member_name:{type:String, required:true, index:{unique:true}},
@@ -23,7 +18,7 @@ var schema = new mongoose.Schema({
     email:String,
     public_profile:String,
     private_profile:String,
-    roles:[role_schema],
+    roles:[String],
     enc_method:{type:String, enum:['md5', 'sha1', 'sha256', 'ripemd160']},
     enc_envelope:{type:String},
     admin_notes:String

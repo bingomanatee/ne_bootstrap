@@ -49,7 +49,6 @@ module.exports = {
                 links:[
                     {
                         modal:'/sign_in',
-                        script:  "/js/member/sign_in/sign_in_response.js",
                         title:'Sign in'
                     },
                     {

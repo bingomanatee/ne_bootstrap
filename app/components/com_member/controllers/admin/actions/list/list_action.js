@@ -5,7 +5,7 @@ var ejs = require('ejs');
 
 var _edit_button = ejs.compile('<a href="/admin/member/<%= _id %>" ><i class="icon-edit"></i> Edit Member</a>');
 
-var _roles = function(member){
+var _roles = function (member) {
     return member.roles ? member.roles.join(', ') : '--'
 }
 /* *************** MODULE ********* */
@@ -15,8 +15,20 @@ module.exports = {
     /* ****************** GET **************** */
 
     on_get_validate:function (rs) {
-        this.on_get_input(rs);
+        var self = this;
+        return self.on_get_input(rs);
+
+        this.models.member.can(rs, ['admin site'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_get_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to see this page')
+            }
+        })
     },
+    _on_validate_error_go:'/',
 
     on_get_input:function (rs) {
         var self = this;
@@ -48,26 +60,34 @@ module.exports = {
     /* ************** POST **************** */
 
     on_post_validate:function (rs) {
-        this.on_post_input(rs);
+        var self = this;
+        this.models.member.can(rs, ['admin site'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_post_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to view this page');
+            }
+        })
     },
 
     on_post_input:function (rs) {
         var self = this;
 
-       var q = this.models.member.active().sort('member_name');
+        var q = this.models.member.active().sort('member_name');
 
         var p = rs.req_props;
-        console.log('p: %s', util.inspect(p));
 
-        if (p.find_by_name){
+        if (p.find_by_name) {
             q.regex('member_name', '.*' + rs.req_props.name + '.*');
         }
 
-        if (p.find_by_role){
+        if (p.find_by_role) {
             q.where('roles').in(rs.req_props.roles);
         }
 
-        if (p.find_by_task){
+        if (p.find_by_task) {
             q.where('tasks').in(rs.req_props.tasks);
         }
 
@@ -77,18 +97,20 @@ module.exports = {
                 self.emit('input_error', rs, 'err');
             } else {
                 var data_table_config = {
-                            title:'Members',
-                            data:members,
-                            columns:[
-                                {label: 'Member_name', field: 'member_name'},
-                                {label:'Real Name', field:'real_name'},
-                                {label:'roles', template: _roles},
-                                {label:'&nbsp;', template:_edit_button}
-                            ]}
+                    title:'Members',
+                    data:members,
+                    columns:[
+                        {label:'Member_name', field:'member_name', width: '23%'},
+                        {label:'Real Name', field:'real_name', width: '23%'},
+                        {label:'roles', template:_roles, width: '23%'},
+                        {label:'&nbsp;', template:_edit_button, width: '20%'}
+                    ]}
 
-                self.on_output(rs, {list:true, data_table_config: data_table_config, "layout_name": "empty"});
+                self.on_output(rs, {list:true, data_table_config:data_table_config, "layout_name":"empty"});
             }
         })
-    }
+    },
+
+    _on_post_error_go: '/'
 
 }

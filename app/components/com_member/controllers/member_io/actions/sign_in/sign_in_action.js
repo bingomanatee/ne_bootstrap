@@ -41,14 +41,13 @@ module.exports = {
                 console.log('... successful login: %s', util.inspect(member));
                 rs.set_session('member', member);
                 rs.flash('info', 'signed in as ' + name);
-                rs.go('/modal_confirm');
+                rs.go('/');
             } else {
-                console.log('... failed login: no member');
                 self.emit('process_error', rs, 'cannot sign in as ' + name)
             }
         }, name, pass);
     },
 
-    _on_error_go:'/modal_error'
+    _on_error_go:'/'
 
 }

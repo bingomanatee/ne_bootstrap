@@ -35,7 +35,6 @@ $(function () {
             return m;
         }, {});
 
-        console.log('form data: ', form_vals);
 
         function _has_value(n){
             return form_vals[n] && form_vals[n].length;
