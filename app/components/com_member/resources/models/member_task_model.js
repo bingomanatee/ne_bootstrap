@@ -17,11 +17,13 @@ schema.statics.inactive = function (cb) {
     return this.find('deleted', true).run(cb);
 }
 
-var _model = mm.create(schema,
-    {name:"member_task", type:"model"},
-    mongoose
-);
+var model_def = {name:"member_task", type:"model"};
 
-module.exports = function () {
+var _model;
+
+module.exports = function (mongoose_inject) {
+    if (!_model) {
+        _model = mm.create(schema, model_def, mongoose_inject ? mongoose_inject : mongoose);
+    }
     return _model;
 }

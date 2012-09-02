@@ -37,6 +37,7 @@ module.exports = {
                     },
                     {
                         modal:'/sign_out',
+                        link: false,
                         script:  "/js/member/sign_out/sign_out_response.js",
                         title:'Sign Out'
                     }

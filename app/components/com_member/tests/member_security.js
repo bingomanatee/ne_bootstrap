@@ -6,7 +6,7 @@ var con = 'mongodb://localhost/member_security_' + Math.floor(Math.random() * 10
 console.log('creating %s', con);
 NE.deps.mongoose.connect(con);
 var tests_done = 0;
-var TEST_COUNT = 2;
+var TEST_COUNT = 1;
 
 function _try_drop() {
     if (++tests_done >= TEST_COUNT) {
@@ -57,11 +57,3 @@ tap.test('', function (t) {
     })
 
 })
-
-tap.test('seond test', function (t) {
-
-    _try_drop();
-    t.end();
-})
-
-

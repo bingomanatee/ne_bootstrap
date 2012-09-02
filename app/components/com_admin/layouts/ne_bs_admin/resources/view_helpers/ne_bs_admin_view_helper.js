@@ -30,7 +30,20 @@ module.exports = {
                     {link: '/', title: 'Site Home'},
                     {link:'/admin/home', title:'Admin home'},
                     {link:'/admin/options', title:'Options'}
-                ]}
+                ]},
+            {
+                title: 'Membership',
+                links: [
+                    {
+                      link: '/admin/members',
+                        title: 'Members'
+                    },
+                    {
+                        link: '/admin/member_tasks',
+                        title: 'Tasks'
+                    }
+                ]
+            }
         ];
         cb();
     }

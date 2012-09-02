@@ -1,0 +1,66 @@
+<h1>Roles</h1>
+<p>They're roles.</p>
+
+<div class="well-large">
+    <%- partial(helpers.nebsavr + '/data_table.html', data_table_config) %>
+    <hr/>
+    <a href="#new_role_modal" class="btn btn-primary" role="btn" data-toggle="modal"><i class="icon-edit"></i> Crete Role</a>
+</div>
+
+<!-- Modal -->
+<div class="modal new_role_modal" id="new_role_modal" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     style="display: none"
+        >
+    <form class="form" method="post" style="padding: 0px; margin: 0px" action="/admin/member_role/0/new">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Add Role</h3>
+        </div>
+        <div class="modal-body" style="min-height: 10em">
+            <label>Name</label><input type="text" name="name"/>
+            <fieldset>
+                <legend>Tasks</legend>
+                <% tasks.forEach(function(task){%>
+                <label style="display: inline-block; width: 12em"><input name="tasks" type="checkbox"
+                                                                         value="<%= task %>"/> <%= task %></label>
+                <% }) %>
+            </fieldset>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button class="btn btn-primary" type="submit">Create Role</button>
+        </div>
+    </form>
+</div>
+
+
+<script language="javascript">
+    $(function () {
+        $('#new_role_modal form').submit(function () {
+            try {
+
+                var d = form_data();
+
+                $.post('/admin/member_role/0/new', d, function (result) {
+                    console.log('result: ', result);
+                    document.location.reload();
+                })
+            } catch(err){
+                console.log(err);
+            }
+            return false;
+        })
+    })
+
+
+    function form_data() {
+        var sd = $('#new_role_modal form').serializeArray();
+        return _.reduce(sd, function (m, f) {
+            m[f.name] = f.value;
+            return m;
+        }, {})
+    }
+
+</script>

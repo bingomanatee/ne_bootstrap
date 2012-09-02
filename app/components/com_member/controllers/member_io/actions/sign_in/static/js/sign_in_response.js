@@ -13,7 +13,7 @@ $(function () {
             console.log('form value: ', form_vals);
 
             $.post('/sign_in', form_vals, function(data){
-                $('#modal').html(data);
+                $('#template_modal').html(data);
             });
             return false;
         })
