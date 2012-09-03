@@ -7,17 +7,32 @@ var _member_auth = require('./libs/member_auth');
 
 var model_def = {
     name:"member",
-    type:"model"
-};
+    type:"model",
+
+    get_member_name:function (name, cb, search) {
+        if (search) {
+            var match = {"$or":[
+                {member_name:new RegExp(name, 'i')},
+                {real_name:new RegExp(name, 'i')}
+            ]}
+        } else {
+            var match = {"$or": [
+                {member_name: name},
+                {real_name: name}]}
+        }
+        this.find_one(match, cb);
+    }
+}
+
 _.extend(model_def, _member_signin);
 _.extend(model_def, _member_auth);
 
 var _model;
 
 module.exports = function (mongoose_inject) {
-    if (!_model){
+    if (!_model) {
 
-        if (!mongoose_inject){
+        if (!mongoose_inject) {
             mongoose_inject = NE.deps.mongoose;
         }
 
@@ -39,7 +54,7 @@ module.exports = function (mongoose_inject) {
             admin_notes:String
         });
 
-      _model  = mm.create(schema, model_def, mongoose_inject);
+        _model = mm.create(schema, model_def, mongoose_inject);
     }
     return _model;
 }

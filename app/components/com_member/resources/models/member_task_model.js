@@ -28,6 +28,28 @@ var model_def = {
             cb(null, _task_names_cache);
         }
 
+    },
+
+    /**
+     * expresses task list as a useful data stream for a list of checkboxes.
+     * tasks whose names are included in the first parameter will be checked.
+     * @param checked: [String]
+     * @param cb: function
+     */
+    options:function (checked, cb) {
+        this.active(function (err, tasks) {
+            if (err) {
+                return cb(err);
+            } else {
+                var options = _.map(tasks, function (task) {
+                    return {
+                        name:task.name,
+                        checked:_.include(checked, task.name)
+                    };
+                });
+                cb(null, options);
+            }
+        })
     }
 };
 

@@ -3,7 +3,19 @@ var mm = NE.deps.support.mongoose_model;
 var util = require('util');
 var _ = require('underscore');
 
+var member_task_model_factory = require('./member_task_model');
 var _model;
+
+function _task_options(role, cb) {
+    var tasks = [];
+    if (role.tasks) {
+        tasks = role.tasks;
+    }
+
+    var member_tasks = member_task_model_factory();
+
+    member_tasks.options(tasks, cb);
+}
 
 var model_def = {
     name:"member_role",
@@ -43,16 +55,16 @@ var model_def = {
      * @param cb: function
      * @param create: Boolean
      */
-    get_role: function(name, cb, create){
+    get_role:function (name, cb, create) {
         var self = this;
-        if (!name){
+        if (!name) {
             cb(new Error('no name passed to get_role'));
         } else {
-            this.find_one({name: name}, function(err, role){
-                if (role){
+            this.find_one({name:name}, function (err, role) {
+                if (role) {
                     cb(null, role);
-                } else if (create){
-                    self.put({name: name}, cb);
+                } else if (create) {
+                    self.put({name:name}, cb);
                 } else {
                     cb(null, false);
                 }
@@ -82,6 +94,23 @@ var model_def = {
         })
     },
 
+    role_task_options:function (role, cb) {
+        var self = this;
+        if (_.isString(role)) {
+            this.get_role(role, function (err, role_record) {
+                if (err) {
+                    cb(err);
+                } else if (role_record) {
+                    _task_options(role_record, cb);
+                } else {
+                    cb(new Error('cannot get role ' + role));
+                }
+            });
+        } else {
+            _task_options(role, cb);
+        }
+    },
+
     /**
      * This method will either create an existing role
      * with the given name
@@ -99,25 +128,26 @@ var model_def = {
         var self = this;
         if (!name) {
             name = 'admin'
-        };
+        }
+        ;
         var member_task_model_factory = require('./member_task_model');
         var member_tasks = member_task_model_factory();
 
-        member_tasks.task_names(function(err, task_names){
+        member_tasks.task_names(function (err, task_names) {
             console.log('setting role %s ...  to [%s]', name, util.inspect(tasks));
-            if ((!tasks) || (tasks == '*')){
+            if ((!tasks) || (tasks == '*')) {
                 console.log(' ... all tasks: %s', util.inspect(task_names));
                 tasks = task_names;
-            } else if (tasks == 'none'){
+            } else if (tasks == 'none') {
 
                 tasks = [];
             } else {
                 var invalid_tasks = _.difference(tasks, task_names);
-                if (invalid_tasks.length){
+                if (invalid_tasks.length) {
                     return cb(new Error('the following tasks do not exist in our task list: %s', invalid_tasks.join(', ')))
                 }
             }
-            self.get_role(name, function(err, role){
+            self.get_role(name, function (err, role) {
                 role.tasks = tasks;
                 role.markModified('tasks');
                 role.save(cb);

@@ -2,6 +2,7 @@ var _ = require('underscore');
 var util = require('util');
 var fs = require('fs');
 var paj_encrypt = require('paj_encrypt');
+var _DEBUG = false;
 
 /* *************** MODULE ********* */
 
@@ -26,7 +27,7 @@ module.exports = {
                     if (err) {
                         cb(err)
                     } else if (member) {
-                        console.log('member to test: %s', util.inspect(member));
+                  if (_DEBUG)      console.log('member to test: %s', util.inspect(member));
                         try {
                             var ep = self.encrypt_password(pass, member.enc_method, member.enc_envelope);
                             if (ep == member.pass) {

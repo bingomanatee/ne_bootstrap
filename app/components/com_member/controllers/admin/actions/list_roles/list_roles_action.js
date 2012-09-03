@@ -1,6 +1,18 @@
 var _ = require('underscore');
 var util = require('util');
 var fs = require('fs');
+var ejs = require('ejs');
+var qs = require('querystring');
+
+_edit_button = ejs.compile('<a href="#edit_role_modal"  ' +
+    'class="btn" role="btn" data-toggle="modal" ' +
+    'onClick="edit_role(\'<%- name.replace(/\\s/g, \'%20\') %>\')" ' +
+    '><i class="icon-edit"></i> Edit Role</a>');
+
+_delete_button = ejs.compile('<a href="/admin/member_role/<%- name.replace(/\\s/g, \'%20\') %>/delete" ' +
+    ' class="btn" role="btn" ><i class="icon-trash"></i> Delete</a>');
+
+function _show_tasks(role){return role.tasks.join(', '); }
 
 /* *************** MODULE ********* */
 
@@ -45,9 +57,13 @@ module.exports = {
             data:roles,
             columns:[
                 {label:'Name', field:'name', width:'12em'},
-                {label: 'Tasks', template: function(role){
-                    return role.tasks.join(', ')
-                }}
+                {label: 'Tasks', template: _show_tasks
+                },{
+                    label: 'Edit Role', template: _edit_button
+                },
+                {
+                    label: 'Delete Role', template: _delete_button
+                }
             ]}
 
         self.on_output(rs, {data_table_config:data_table_config, tasks:tasks});
