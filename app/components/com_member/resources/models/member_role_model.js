@@ -9,6 +9,13 @@ var model_def = {
     name:"member_role",
     type:"model",
 
+    /**
+     * note - this will find the tasks as a union of all the given roles.
+     * @param roles: [String] | String -- the name(s) of one or more roles.
+     * @param cb: function
+     * @return {*}
+     */
+
     roles_tasks:function (roles, cb) {
         if (!roles || (roles.length == 0)) {
             return cb(null, []);
@@ -30,6 +37,35 @@ var model_def = {
         })
     },
 
+    /**
+     * Fetches a named role. Optionally, creates it if it does not exist.
+     * @param name: String
+     * @param cb: function
+     * @param create: Boolean
+     */
+    get_role: function(name, cb, create){
+        var self = this;
+        if (!name){
+            cb(new Error('no name passed to get_role'));
+        } else {
+            this.find_one({name: name}, function(err, role){
+                if (role){
+                    cb(null, role);
+                } else if (create){
+                    self.put({name: name}, cb);
+                } else {
+                    cb(null, false);
+                }
+            });
+        }
+    },
+
+    /**
+     * expresses role list as a useful data stream for a list of checkboxes.
+     * roles whose names are included in the first parameter will be checked.
+     * @param checked: [String]
+     * @param cb: function
+     */
     options:function (checked, cb) {
         this.active(function (err, roles) {
             if (err) {
@@ -44,6 +80,52 @@ var model_def = {
                 cb(null, options);
             }
         })
+    },
+
+    /**
+     * This method will either create an existing role
+     * with the given name
+     * or reset an existing roles' task list to only the given tasks.
+     *
+     * define_role(cb, 'admin', '*') -- callback recieves a role with ALL tasks
+     * define_role(cb, 'member_admin', ['admin members'] -- callback recieves a role with tasks ['admin members']
+     *
+     * NOTE: you cannot use tasks that aren't in the current roster of tasks - trying to do so will throw an error.
+     *
+     * @param cb
+     * @param name
+     */
+    define_role:function (cb, name, tasks) {
+        var self = this;
+        if (!name) {
+            name = 'admin'
+        };
+        var member_task_model_factory = require('./member_task_model');
+        var member_tasks = member_task_model_factory();
+
+        member_tasks.task_names(function(err, task_names){
+            console.log('setting role %s ...  to [%s]', name, util.inspect(tasks));
+            if ((!tasks) || (tasks == '*')){
+                console.log(' ... all tasks: %s', util.inspect(task_names));
+                tasks = task_names;
+            } else if (tasks == 'none'){
+
+                tasks = [];
+            } else {
+                var invalid_tasks = _.difference(tasks, task_names);
+                if (invalid_tasks.length){
+                    return cb(new Error('the following tasks do not exist in our task list: %s', invalid_tasks.join(', ')))
+                }
+            }
+            self.get_role(name, function(err, role){
+                role.tasks = tasks;
+                role.markModified('tasks');
+                role.save(cb);
+            }, true);
+
+        })
+
+
     }
 
 };

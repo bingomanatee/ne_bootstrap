@@ -39,6 +39,10 @@ module.exports = {
                         title: 'Members'
                     },
                     {
+                      link: '/admin/member_roles',
+                        title: 'Roles'
+                    },
+                    {
                         link: '/admin/member_tasks',
                         title: 'Tasks'
                     }

@@ -9,7 +9,7 @@
     delete state_data.next;
     delete state_data.pass;
     delete state_data.pass2;
-    if (state_data.fb_app_secret) state_data.fb_app_secret = state_data.fb_app_secret.replace(/.{5}$/, '');
+    if (state_data.facebook_app_secret) state_data.facebook_app_secret = state_data.facebook_app_secret.replace(/.{15}$/, '...');
     %>
 
     <dl class="clearfix">

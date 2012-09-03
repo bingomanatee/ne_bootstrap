@@ -75,12 +75,18 @@ module.exports = {
     on_post_input:function (rs) {
         var self = this;
 
-        var q = this.models.member.active().sort('member_name');
 
         var p = rs.req_props;
 
         if (p.find_by_name) {
-            q.regex('member_name', '.*' + rs.req_props.name + '.*');
+            // q.regex('member_name', '.*' + rs.req_props.name + '.*');
+            var q = this.models.member.find({"$or":[
+                {member_name:new RegExp(rs.req_props.name, 'i')},
+                {real_name:new RegExp(rs.req_props.name, 'i')}
+            ]}).sort('member_name');
+        } else {
+
+            var q = this.models.member.active().sort('member_name');
         }
 
         if (p.find_by_role) {
@@ -89,6 +95,10 @@ module.exports = {
 
         if (p.find_by_task) {
             q.where('tasks').in(rs.req_props.tasks);
+        }
+//@TODO: expose in UI
+        if (p.find_by_email) {
+            q.regex('email', rs.req_props.email);
         }
 
         q.slice(0, 50);
@@ -100,10 +110,10 @@ module.exports = {
                     title:'Members',
                     data:members,
                     columns:[
-                        {label:'Member_name', field:'member_name', width: '23%'},
-                        {label:'Real Name', field:'real_name', width: '23%'},
-                        {label:'roles', template:_roles, width: '23%'},
-                        {label:'&nbsp;', template:_edit_button, width: '20%'}
+                        {label:'Member_name', field:'member_name', width:'23%'},
+                        {label:'Real Name', field:'real_name', width:'23%'},
+                        {label:'roles', template:_roles, width:'23%'},
+                        {label:'&nbsp;', template:_edit_button, width:'20%'}
                     ]}
 
                 self.on_output(rs, {list:true, data_table_config:data_table_config, "layout_name":"empty"});
@@ -111,6 +121,6 @@ module.exports = {
         })
     },
 
-    _on_post_error_go: '/'
+    _on_post_error_go:'/'
 
 }

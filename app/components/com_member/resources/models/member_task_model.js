@@ -3,8 +3,33 @@ var mm = NE.deps.support.mongoose_model;
 var util = require('util');
 var _ = require('underscore');
 
+var MAX_AGE_OF_TASK_NAME_CACHE = 60000; // refresh task names every minute
 
-var model_def = {name:"member_task", type:"model"};
+var _task_names_cache = false;
+var _task_names_cache_created = 0;
+
+var model_def = {
+    name:"member_task",
+    type:"model",
+    task_names:function (cb) {
+        var t = new Date().getTime();
+        if ((!_task_names_cache) || ((t - MAX_AGE_OF_TASK_NAME_CACHE) < _task_names_cache_created)) {
+
+            this.active(function (err, tasks) {
+                if (err) {
+                    return cb(err);
+                } else {
+                    _task_names_cache = _.pluck(tasks, 'name');
+                    _task_names_cache_created = t;
+                    cb(null, _task_names_cache.slice(0));
+                }
+            })
+        } else {
+            cb(null, _task_names_cache);
+        }
+
+    }
+};
 
 var _model;
 

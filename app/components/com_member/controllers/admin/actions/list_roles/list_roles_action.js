@@ -44,7 +44,10 @@ module.exports = {
             title:'Member Roles',
             data:roles,
             columns:[
-                {label:'Name', field:'name', width:'12em'}
+                {label:'Name', field:'name', width:'12em'},
+                {label: 'Tasks', template: function(role){
+                    return role.tasks.join(', ')
+                }}
             ]}
 
         self.on_output(rs, {data_table_config:data_table_config, tasks:tasks});

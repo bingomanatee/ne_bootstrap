@@ -47,8 +47,15 @@ tap.test('', function (t) {
                 t.ok(_.include(tasks, 'delta'), 'ab gd has delta');
                 t.ok(!_.include(tasks, 'omega'), 'ab gd doesn\'t have omega');
 
-                _drop();
-                t.end();
+                role_model.define_role(function(err, foo){
+                 //   console.log('role foo: %s', util.inspect(foo.toJSON()));
+                    var fro = _.sortBy(foo.tasks, _.identity);
+                    var all_roles = _.sortBy(['alpha','beta','gamma', 'delta', 'omega'], _.identity);
+                    t.deepEqual(fro, all_roles, 'foo has all roles');
+
+                    _drop();
+                    t.end();
+                }, 'foo', '*');
             })
 
 
