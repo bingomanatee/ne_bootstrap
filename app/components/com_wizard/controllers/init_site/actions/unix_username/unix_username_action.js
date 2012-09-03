@@ -47,7 +47,7 @@ module.exports = {
             } else {
                 self.on_output(rs, {})
             }
-        }, {unix_username: unix_username}, 'init_site', 'unix_user');
+        }, {unix_username: unix_username}, 'init_site', 'unix_username');
 
     },
 
