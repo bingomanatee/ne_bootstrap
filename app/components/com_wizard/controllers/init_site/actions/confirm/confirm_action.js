@@ -37,13 +37,27 @@ module.exports = {
     },
 
     on_post_process:function (rs, props, next, prev) {
+        var self = this;
         if (_DEBUG) console.log('next: %s, prev: %s', util.inspect(next), util.inspect(prev));
         // note - no input here.
         if (next) {
-            this.model().set_state (function(){
-                rs.flash('info', 'You have completed the site wizard');
-                rs.go('/init_site/done');
-            }, 'done', 'init_site','wizard');
+            self.model().get_state(function (err, state) {
+                var fb_options = state.facebook_app;
+                console.log('setting facebook options %s', util.inspect(fb_options));
+                self.models.site_options.set_options(fb_options, function (err, done) {
+                    if(err){
+                        self.emit('process_error', rs, err);
+                    } else {
+                        self.model().set_state(function () {
+                            rs.flash('info', 'You have completed the site wizard');
+                            rs.go('/init_site/done');
+                        }, 'done', 'init_site', 'wizard');
+                    }
+                });
+
+            }, 'init_site')
+
+
         } else if (prev) {
             rs.go('/init_site/')
         } else {

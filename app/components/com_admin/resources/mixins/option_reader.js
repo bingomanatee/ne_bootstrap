@@ -41,7 +41,6 @@ function _get_option(name, cb, frame) {
 
 module.exports = {
     init:function (frame, cb) {
-        console.log('option reader');
         var options_model = frame.get_resource('model', 'site_options');
 
         NE.Action.prototype.get_option = function (name, callback) {
