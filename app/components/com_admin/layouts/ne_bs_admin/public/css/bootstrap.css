@@ -162,7 +162,7 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #036;
-  background-color: #CCDDE0;
+  background-color: #CCF0FF;
 }
 
 a {
@@ -2810,7 +2810,7 @@ table .span24 {
 }
 
 .well, .well-large, .well-small{
-    background-color: #DEE;
+    background-color: white;
     -webkit-border-radius: 4px;
        -moz-border-radius: 4px;
             border-radius: 4px;
