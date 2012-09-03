@@ -2,8 +2,8 @@ var NE = require('nuby-express');
 var mm = NE.deps.support.mongoose_model;
 var util = require('util');
 var _ = require('underscore');
-var _member_signin = require('member_signin');
-var _member_auth = require('member_auth');
+var _member_signin = require('./libs/member_signin');
+var _member_auth = require('./libs/member_auth');
 
 var model_def = {
     name:"member",
