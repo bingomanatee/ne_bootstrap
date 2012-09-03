@@ -10,19 +10,11 @@ module.exports = {
 
 
     on_validate:function (rs) {
-        this.on_input(rs);
-    },
-
-    on_input:function (rs) {
-        this.on_process(rs);
-    },
-
-    on_process: function(rs){
         rs.clear_session('member');
         rs.flash('info', 'you are now signed out. Goodbye!');
-        rs.go('/modal_confirm?modal_title=Signed%20Out');
+        rs.go('/');
     },
 
-    _on_error_go:'/modal_error'
+    _on_error_go:'/'
 
 }

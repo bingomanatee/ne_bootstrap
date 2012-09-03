@@ -19,6 +19,12 @@ module.exports = {
 
     init:function (rs, input, cb) {
 
+        var site_menu =
+        {  title:'Site',
+            links:[
+                {link:'/', title:'Home'}
+            ]}
+
         if (input.sidebar) return cb();
 
         if (!(_layout_name(rs, input) == 'ne_bootstrap')) {
@@ -32,17 +38,15 @@ module.exports = {
                 title:'Membership',
                 links:[
                     {
-                        link:'/member/' + member._id,
-                        title:'viewing as ' + member.member_name
+                        title:'viewing as <br />' + member.member_name
                     },
                     {
-                        modal:'/sign_out',
-                        link: false,
-                        script:  "/js/member/sign_out/sign_out_response.js",
+                        link:'/sign_out',
                         title:'Sign Out'
                     }
                 ]
             }
+
         } else {
             var member_menu = {
                 title:'Membership',
@@ -58,16 +62,19 @@ module.exports = {
                 ]
             }
         }
+        input.sidebar = [site_menu, member_menu];
 
-        input.sidebar = [
-            {  title:'Site',
-                links:[
-                    {link:'/', title:'Home'},
-                    {link:'/admin/home', title:'Administer'}
-                ]}
-            ,
-            member_menu
-        ];
-        cb();
+        if (member){
+            rs.action.models.member.can(member, ['admin site'],function(err, can){
+
+                if (can){
+                    member_menu.links.push({link: '/admin/home', title: 'Administer'});
+                }
+                cb();
+            })
+        }  else {
+
+            cb();
+        }
     }
 }
