@@ -94,8 +94,29 @@ function WizardsCtrl($scope, $filter, $compile, Wizards, WizardSteps) {
         var show = $scope[id + '_html_checked'];
 
         if (show) {
-            $("#" + id + '_html').val(target.content);
-            var editor = CKEDITOR.replace(id + '_html');
+          var  html_field = $("#" + id + '_html');
+        html_field.val(target.content);
+            var editor = CKEDITOR.replace(id + '_html', {
+                toolbar : 'Limited',
+
+                toolbar_Limited :
+                [
+                	{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                	{ name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
+                	{ name: 'forms', items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'HiddenField' ] },
+
+                	{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Subscript','Superscript','-','RemoveFormat' ] },
+                	{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv',
+                	'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-' ] },
+                	{ name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+                	{ name: 'insert', items : [ 'Image','Table','HorizontalRule','Smiley','SpecialChar'] },
+
+                	{ name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
+                	{ name: 'colors', items : [ 'TextColor','BGColor' ] },
+                	{ name: 'tools', items : [ 'Source','-', 'Maximize', 'ShowBlocks','-','About' ] }
+                ]
+
+            });
             target.content_type = 'html';
             txt_field.hide();
 
@@ -115,6 +136,8 @@ function WizardsCtrl($scope, $filter, $compile, Wizards, WizardSteps) {
             editor.on('blur', _save_editor)
 
             txt_field.data('editor', editor);
+            txt_field.data('editor', editor);
+            txt_field.data('html_field', html_field);
         } else {
             $scope.remove_editor(id);
         }
@@ -128,11 +151,11 @@ function WizardsCtrl($scope, $filter, $compile, Wizards, WizardSteps) {
         var editor = txt_field.data('editor');
 
         if (editor) {
-
+            var html_field = txt_field.data('html_field');
             txt_field.show();
             txt_field.removeData('editor');
-            CKEDITOR.remove(editor);
             editor.destroy();
+            html_field.hide();
             if ($scope[id + '_html_checked']) {
                 $scope[id + '_html_checked'] = false;
                 // might recurse but lack of editor should limit recrusion to 1 cycle
@@ -154,6 +177,7 @@ function WizardsCtrl($scope, $filter, $compile, Wizards, WizardSteps) {
 
         $('#publish_wizard').html(_publish_form($scope));
         $('#publish_form').submit(function(){
+            alert('your wizard has been published. Restart your app to test it.');
             return false;
         });
         $scope.publish_wizard_show = true;

@@ -3057,18 +3057,8 @@ button.close {
 .btn-primary {
   color: #ffffff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-image: none;
   background-color: #990000;
-  *background-color: #0044cc;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#990000), to(#000000));
-  background-image: -webkit-linear-gradient(top, #990000, #000000);
-  background-image: -o-linear-gradient(top, #990000, #000000);
-  background-image: linear-gradient(to bottom, #990000, #000000);
-  background-image: -moz-linear-gradient(top, #990000, #000000);
-  background-repeat: repeat-x;
-  border-color: #000000 #000000 #002a80;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff990000', endColorstr='#ff000000', GradientType=0);
-  filter: progid:dximagetransform.microsoft.gradient(enabled=false);
 }
 
 .btn-primary:hover,
@@ -3078,7 +3068,6 @@ button.close {
 .btn-primary[disabled] {
   color: #ffffff;
   background-color: #0044cc;
-  *background-color: #003bb3;
 }
 
 .btn-primary:active,
