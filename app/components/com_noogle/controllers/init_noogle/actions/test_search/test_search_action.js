@@ -32,7 +32,7 @@ on_post_process: function (rs,prev,next){
 	var self = this;
 	this.models.wizard_state.set_state(	function (err,state){
 	if (next) {rs.go("/init_noogle/test_search");
-	} else if (prev) {rs.go("/init_noogle/index_data_files");
+	} else if (prev) {rs.go("/init_noogle/scan_data_files");
 	} else { self.on_output(rs, {});
 	}
 }	)
