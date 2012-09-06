@@ -29,13 +29,13 @@ on_post_input: function (rs){
 },
 
 on_post_process: function (rs,prev,next){
+    console.log('intro post %s %s', prev, next);
 	var self = this;
-	this.models.wizard_state.set_state(	function (err,state){
-	if (next) {rs.go("/init_noogle/index_data_files");
-	} else if (prev) {rs.go("/init_noogle/intro");
-	} else { self.on_output(rs, {});
+	if (next) {
+        rs.go("/init_noogle/index_data_files");
+	} else {
+        rs.go("/init_noogle/index_data_files");
 	}
-}	)
 },
 
 /* ****** PUT ****** */

@@ -1,6 +1,43 @@
 <form method="post" class="wizard"><h1>Initilaize Noogle</h1>
-<%- partial("../../views/step_header.html", {step: "scan_data_files"}) %> <br />
-<h2>Scan Data Files</h2>
-<p>It will take a While to index all these files ... be patient</p>
+    <%- partial("../../views/step_header.html", {step: "scan_data_files"}) %> <br/>
 
-<%- partial("../../views/step_footer.html", {step: "scan_data_files"}) %></form>
+    <h2>Scan Data Files</h2>
+
+    <p>It will take a While to index all these files ... be patient</p>
+
+    <%- partial("../../views/step_footer.html", {step: "scan_data_files"}) %>
+</form>
+
+<!-- Modal -->
+<div class="modal" id="loading-modal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+    <div class="modal-header">
+        <h3 id="myModalLabel">Scanning Index Files</h3>
+    </div>
+    <div class="modal-body">
+        <p>We are scanning your data files for content.</p>
+
+        <p>Please wait for us to complete this step.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary continue-btn" onclick=" $('#loading-modal').modal('hide');return false"
+                style="display: none">Continue
+        </button>
+    </div>
+</div>
+
+
+<script language="javascript">
+
+    $(function () {
+        $('#loading-modal').modal();
+        $.get("/noogle/parse_indexes", function (data) {
+            $('#loading-modal .continue-btn').show();
+            $('#loading-modal .modal-body').html('<p>Thanks for your patience. </p>' +
+                    '<p>We have loaded <b>' + data.count + 'lines of content</b>.</p>');
+            setTimeout(function () {
+                $('#loading-modal').modal('hide');
+            }, 3000);
+        });
+    })
+</script>

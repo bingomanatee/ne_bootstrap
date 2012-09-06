@@ -49,7 +49,7 @@ module.exports = {
 
                                 files2.import_all(function (err3, status) {
                                     if (err3) {
-                                        self.emit('process_error', err3);
+                                        self.emit(rs, 'process_error', err3);
                                     } else {
                                         var ftj = files.toJSON();
                                         var ftj2 = files2.toJSON();
@@ -69,7 +69,7 @@ module.exports = {
 
                         write_chat.files_at_domain(DOMAIN_DEBUGGABLE, function (err2, files2) {
                             if (err2) {
-                                self.emit('process_error', err2);
+                                self.emit(ea, 'process_error', err2);
                             } else {
 
                                 files2.import_all(function (err3, status) {

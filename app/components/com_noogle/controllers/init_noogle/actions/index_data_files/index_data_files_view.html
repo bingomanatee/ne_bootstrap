@@ -3,44 +3,31 @@
 
     <h2>Index Data Files</h2>
 
-    <p>
-        Pull in a list of content files</p>
-    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; ">
-        <tbody>
-        <tr>
-            <th>
-                Scope
-            </th>
-            <td>
-                <label class="radio" style="display: inline-block; width: 12em"><input checked="checked" name="scope"
-                                                                                       type="radio" value="1"/>&nbsp;one
-                    file</label>
-                <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
-                                                                                       value="10"/>&nbsp;ten
-                    files</label>
+    <fieldset id="load-index-controls">
+        <legend>Scope</legend>
+        <label class="radio" style="display: inline-block; width: 12em"><input checked="checked" name="scope"
+                                                                               type="radio" value="1"/>&nbsp;one
+            file</label>
+        <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
+                                                                               value="10"/>&nbsp;ten
+            files</label>
 
-                <br />
+        <br />
 
-                <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
-                                                                                       value="100"/>&nbsp;a hundred
-                    files</label>
-                <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
-                                                                                       value="1000"/>&nbsp;a thousand
-                    files</label>
-                <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
-                                                                                       value="all"/>&nbsp;<b>all</b>
-                    files</label>
-                <button class="btn btn-primary" onclick="return NOOGLE.load_indexes()">Load Indexes</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-        </tr>
-        </tbody>
-    </table>
+        <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
+                                                                               value="100"/>&nbsp;a hundred
+            files</label>
+        <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
+                                                                               value="1000"/>&nbsp;a thousand
+            files</label>
+        <label class="radio" style="display: inline-block; width: 12em"><input name="scope" type="radio"
+                                                                               value="all"/>&nbsp;<b>all</b>
+            files</label>
+        <button class="btn btn-primary" onclick="return NOOGLE.load_indexes()">Load Indexes</button>
+        <br />
+        <br />
+    </fieldset>
+
     <table class="table" border="0" cellpadding="0" cellspacing="0">
         <thead>
         <tr>
@@ -52,15 +39,34 @@
         </tr>
         </thead>
         <tbody id="file_rows">
+        <tr><td colspan=5 class="placeholder_cell"></td></tr>
         </tbody>
     </table>
     <%- partial("../../views/step_footer.html", {step: "index_data_files"}) %>
 </form>
+<!-- Modal -->
+<div class="modal" id="loading-modal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
+  <div class="modal-header">
+    <h3 id="myModalLabel">Loading Index Files</h3>
+  </div>
+  <div class="modal-body">
+    <p>We are currently loading index files.</p>
+      <p>Please wait for us to complete this step.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary continue-btn" onclick=" $('#loading-modal').modal('hide');return false" style="display: none">Continue</button>
+  </div>
+</div>
+
 
 <script language="javascript">
     var NOOGLE = {
 
         load_indexes:function () {
+           // $('.placeholder_cell').html('<b style="color: red">It may take a while to load the content pages. Please be patient and do not click on anything.</b>')
+            $('#loading-modal').modal();
+            $("#load-index-controls").hide();
 
             var wizard_vals = _.reduce($('form.wizard').serializeArray(), function (m, r) {
                 m[r.name] = r.value;
@@ -70,6 +76,11 @@
             console.log(wizard_vals);
 
             function _with_files(data) {
+                $('#loading-modal .continue-btn').show();
+                $('#loading-modal .modal-body').html('<p>Thanks for your patience. Your content has now loaded.</p>');
+                setTimeout(function(){
+                    $('#loading-modal').modal('hide');
+                },3000);
                 try {
                     var j = (typeof data == 'string') ? JSON.parse(data) : data;
                 } catch (err) {
@@ -80,10 +91,9 @@
                 row_ele.empty();
                 $.each(j, function (i, file) {
                     row_ele.append('<tr>' +
-                            '<th class="right d">' + (i + 1) + '</th>' +
-                            '<td class="right">' + file.base + '</td>' +
-                            '<td class="right d" nowrap="nowrap">' + file.file + '</td>' +
-                            '<td class="right">' + (file.host) + '</td>' +
+                            '<th class="right">' + (i + 1) + '</th>' +
+                            '<td class="right d">' + file.base + '</td>' +
+                            '<td class="right" nowrap="nowrap">' + file.file + '</td>' +
                             '<td class="right">' + Math.floor(parseInt(file.size)/1024) + ' K</td>' +
                             '</tr>');
                 });
@@ -92,8 +102,9 @@
 
 
             try {
-
                 $.get('/noogle/load_indexes/' + wizard_vals.scope, _with_files);
+
+
             } catch (oops) {
                 console.log(oops);
             }
@@ -108,6 +119,6 @@
         text-align: right !important;
     }
     .d {
-        background-color=rgba(0,0,0,0.1);
+        background-color: rgba(0,0,0,0.1);
     }
 </style>

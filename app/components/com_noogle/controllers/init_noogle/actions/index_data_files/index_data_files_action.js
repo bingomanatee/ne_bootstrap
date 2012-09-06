@@ -1,46 +1,68 @@
+var elastic = require('elastic');
+
 module.exports = {
 
-/* ****** GET ****** */
+    /* ****** GET ****** */
 
-on_get_validate: function (rs){
-	var self = this;
-	self.on_get_input(rs)
-},
+    on_get_validate:function (rs) {
+        var self = this;
 
-on_get_input: function (rs){
-	var self = this;this.models.wizard_state.get_state(function (err, state) {self.on_get_process(rs, state);}, 'init_noogle', 'index_data_files');
-},
+        var moved_on = false;
 
-on_get_process: function (rs,input){
-	var self = this;
-	self.on_output(rs,input)
-},
+        elastic.define_index(function (err, content) {
+            console.log('done define index: %s %s', content,  err ? err.message  :'');
+            if (!moved_on) {
+                moved_on = true;
+                self.on_get_input(rs);
+            }
+        })
+        setTimeout(function () {
+            if (!moved_on) {
+                moved_on = true;
+                self.on_get_input(rs);
+            }
+        }, 10000)
 
-/* ****** POST ****** */
+    },
 
-on_post_validate: function (rs){
-	var self = this;
-	self.on_post_input(rs)
-},
+    on_get_input:function (rs) {
+        var self = this;
+        self.on_get_process(rs);
+    },
 
-on_post_input: function (rs){
-	var self = this;
-	self.on_post_process(rs, rs.has_content("prev"), rs.has_content("next"));
-},
+    on_get_process:function (rs) {
+        var self = this;
+        self.on_output(rs)
+    },
 
-on_post_process: function (rs,prev,next){
-	var self = this;
-	this.models.wizard_state.set_state(	function (err,state){
-	if (next) {rs.go("/init_noogle/scan_data_files");
-	} else if (prev) {rs.go("/init_noogle/intro");
-	} else { self.on_output(rs, {});
-	}
-}	)
-},
+    /* ****** POST ****** */
 
-/* ****** PUT ****** */
+    on_post_validate:function (rs) {
+        var self = this;
+        self.on_post_input(rs)
+    },
 
-/* ****** DELETE ****** */
+    on_post_input:function (rs) {
+        var self = this;
+        self.on_post_process(rs, rs.has_content("prev"), rs.has_content("next"));
+    },
+
+    on_post_process:function (rs, prev, next) {
+        var self = this;
+        console.log('stat set')
+        if (next) {
+            rs.go("/init_noogle/scan_data_files");
+        } else if (prev) {
+            rs.go("/init_noogle/intro");
+        } else {
+            rs.go("/init_noogle/scan_data_files");
+        }
+
+    },
+
+    /* ****** PUT ****** */
+
+    /* ****** DELETE ****** */
 
     a:'a' // last comma
 }
