@@ -1,0 +1,35 @@
+<h3>Noogle File State</h3>
+
+<dl>
+    <dt>Files</dt>
+    <dd><%= stats.files %></dd>
+
+    <dt>Parsed</dt>
+    <dd><%= stats.parsed %></dd>
+</dl>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Domain</th>
+        <th>File</th>
+        <th>Parsed</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% files.forEach(function(file, i){ %>
+    <tr>
+        <td><%= file.domain %></td>
+        <td><%= file.file %></td>
+        <td><%= (file.parsed ? 'parsed' : '&nbsp;') %></td>
+        <td><%= file.state %></td>
+    </tr>
+
+    <% }) %>
+
+    </tbody>
+
+
+</table>

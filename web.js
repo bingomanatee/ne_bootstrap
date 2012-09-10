@@ -1,6 +1,8 @@
 var NE = require('nuby-express');
 var util  = require('util');
 
+var _DEBUG = true;
+
 module.exports = function (config, callback) {
 
     var frame = new NE.Framework();
@@ -9,6 +11,7 @@ module.exports = function (config, callback) {
     frame.start_load(_on_load, __dirname + "/app");
 
     function _on_load() {
+        if (_DEBUG) console.log('framework loaded');
         if (config){
             if(config.mongoose){
                 frame.config.mongoose.db = config.mongoose.db;

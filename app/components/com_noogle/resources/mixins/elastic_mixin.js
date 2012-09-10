@@ -9,11 +9,19 @@ var elastic = require('elastic');
 module.exports = {
 
     init: function(frame, cb){
-        elastic.status(function(err, body){
+
+
+        elastic.define_index(function(err, body){
+            console.log(body);
+            console.log(err);
+
+
+            elastic.status(function(err, body){
             console.log(body);
             console.log(err);
 
             cb();
+        })
         })
     }
 }

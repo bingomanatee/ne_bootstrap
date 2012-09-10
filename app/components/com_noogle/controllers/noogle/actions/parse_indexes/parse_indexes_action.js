@@ -251,7 +251,9 @@ module.exports = {
                         return m;
                     }
 
-                    var summary = _.reduce(results['nodejs.debuggable.com'][1], _red, {count:0, fails:0});
+                    if (results['nodejs.debuggable.com']){
+                        var summary = _.reduce(results['nodejs.debuggable.com'][1], _red, {count:0, fails:0});
+                    }
                     summary = _.reduce(results['static.izs.me'][1], _red, summary);
                     rs.send(summary);
                 }

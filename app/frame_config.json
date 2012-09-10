@@ -4,7 +4,7 @@
     },
 
     "mongoose":{
-        "db":"ne_blog"
+        "db":"ne_bootstrap"
     },
 
     "default_layout_name":"ne_bootstrap",

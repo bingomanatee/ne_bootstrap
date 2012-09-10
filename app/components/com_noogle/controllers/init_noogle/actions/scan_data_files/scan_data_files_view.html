@@ -3,7 +3,14 @@
 
     <h2>Scan Data Files</h2>
 
-    <p>It will take a While to index all these files ... be patient</p>
+    <fieldset>
+        <legend>Init/Reset Scanning</legend>
+        Clear the status of any previous scans. If this is your first time through this wizard, click this button:
+        <br/>
+        <button id="restart_parsing" class="btn btn-primary">Restart Parsing</button>
+        <div id="file_list" style="max-height: 20em; overflow: scroll;">
+        </div>
+    </fieldset>
 
     <%- partial("../../views/step_footer.html", {step: "scan_data_files"}) %>
 </form>
@@ -28,16 +35,35 @@
 
 
 <script language="javascript">
+    var refresh_interval = null;
+
+    function refresh_file_list(){
+        if (!refresh_interval){
+            refresh_interval = setInterval(function(){
+                $('#file_list').load('/noogle/file_list');
+            }, 1500);
+        }
+    }
 
     $(function () {
-        $('#loading-modal').modal();
-        $.get("/noogle/parse_indexes", function (data) {
-            $('#loading-modal .continue-btn').show();
-            $('#loading-modal .modal-body').html('<p>Thanks for your patience. </p>' +
-                    '<p>We have loaded <b>' + data.count + 'lines of content</b>.</p>');
-            setTimeout(function () {
-                $('#loading-modal').modal('hide');
-            }, 3000);
-        });
+        refresh_file_list();
     })
+
+    $('#restart_parsing').on('click',function () {
+        $.get('/noogle/file_list?init=true');
+        refresh_file_list();
+    })
+
+    /*
+     $(function () {
+     $('#loading-modal').modal();
+     $.get("/noogle/parse_indexes", function (data) {
+     $('#loading-modal .continue-btn').show();
+     $('#loading-modal .modal-body').html('<p>Thanks for your patience. </p>' +
+     '<p>We have loaded <b>' + data.count + 'lines of content</b>.</p>');
+     setTimeout(function () {
+     $('#loading-modal').modal('hide');
+     }, 3000);
+     });
+     }) */
 </script>
