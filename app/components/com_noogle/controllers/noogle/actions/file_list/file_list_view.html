@@ -1,13 +1,15 @@
 <h3>Noogle File State</h3>
 
-<dl>
-    <dt>Files</dt>
-    <dd><%= stats.files %></dd>
 
-    <dt>Parsed</dt>
-    <dd><%= stats.parsed %></dd>
-</dl>
+<span><b>Parsed</b>:
+   <%= stats.parsed %></span>
+<span style="float: right; width: 8em">
+    <b>Files</b>:
+<%= stats.files %></span>
 
+<div class="progress">
+    <div class="bar" style="width: <%= Math.floor(100 * stats.parsed / stats.files) %>%;"></div>
+</div>
 <table class="table">
     <thead>
     <tr>

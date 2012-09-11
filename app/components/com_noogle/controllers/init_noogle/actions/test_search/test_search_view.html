@@ -6,19 +6,20 @@
 <p >
 	<label>Search:</label>&nbsp;<input name="query" class="input-xlarge search-query" type="text" />
 
-    <button type="submit" class="btn btn-primary" >Search</button>
+    <button type="submit" class="btn search btn-primary" >Search</button>
 </p>
 <p>
 	results:&nbsp;</p>
-<div id="search_results">
-....
-</div>
+<ol id="search_results" class="on_response">
+</ol>
+
+    <p class="on_response">Total Matches: <b id="total_matches"></b></p>
 
 <%- partial("../../views/step_footer.html", {step: "test_search"}) %></form>
 
         <script language="javascript">
             $(function(){
-                $('.form-search button').on('click', function(data){
+                $('.form-search button.search').on('click', function(data){
                     var data = $('form.wizard').serializeArray();
                     var query = _.reduce(data, function(q, r){
                         if (r.name == 'query'){
@@ -30,7 +31,19 @@
 
                     if (query){
                         $.post('/noogle/api/search', {query: query}, function(data){
+                            if (typeof(data) == 'string') data =JSON.parse(data);
                             console.log('--- search results --- ', data);
+
+                            var l = data.hits.hits.length;
+                            for (var i = 0; i < l; ++i){
+                                var hit = data.hits.hits[i];
+                                $('#search_results').append(
+                                       '<li><b>' + hit._source.username + '</b>: ' + hit._source.message +  '</li>'
+                                )
+                            }
+
+                            $('#total_matches').text( data.hits.total);
+                            $('.on_response').show();
                         })
                     } else {
                         alert('Please put a search term in the field.');
@@ -40,3 +53,9 @@
                 })
             })
         </script>
+
+        <style>
+            .on_response{
+                display: none
+            }
+        </style>

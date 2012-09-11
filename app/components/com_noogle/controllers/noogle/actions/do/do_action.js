@@ -17,32 +17,63 @@ var FILE_ROOT = path.resolve(__dirname, '../../../../chat_files');
 module.exports = {
 
     on_validate:function (rs) {
-        if (rs.has_content('act')){
+        if (rs.has_content('act')) {
             this.on_input(rs);
         } else {
-            rs.send({error: true, message: 'no act'})
+            rs.send({error:true, message:'no act'})
         }
     },
 
     on_input:function (rs) {
         var self = this;
 
-        self.on_process(rs.req_props.act);
+        self.on_process(rs, rs.req_props.act);
 
     },
 
     on_process:function (rs, act) {
 
-        switch(act){
-            case 'reindex':
+        var self = this;
+        switch (act) {
 
+            case 'scan':
+                var scan_files = require('./../../../../node_modules/elastic/scan_files');
+                scan_files(function (err, response) {
+                    console.log('end of scan: error %s, response %s', err, response);
+                });
+                // note - this is a long action.
+                // NOT waiting for it to complete before returning a response
+                rs.send({error:false, message:'starting scan'});
+                break;
+
+            case 'init':
 
                 self.models.noogle_file.model.update({deleted:false},
                     {"$set":{deleted:true}},
                     {multi:true},
                     function () {
                         self.models.noogle_file.add_dirs(function () {
-                            rs.send({error: false, message: 'index reset'})
+                            rs.send({error:false, message:'index reset'})
+                        })
+                    }
+                )
+
+                break;
+
+            case 'init_and_scan':
+
+                self.models.noogle_file.model.update({deleted:false},
+                    {"$set":{deleted:true}},
+                    {multi:true},
+                    function () {
+                        self.models.noogle_file.add_dirs(function () {
+                            var scan_files = require('./../../../../node_modules/elastic/scan_files');
+                            scan_files(function (err, response) {
+                                console.log('end of scan: error %s, response %s', err, response);
+                            });
+                            // note - this is a long action.
+                            // NOT waiting for it to complete before returning a response
+                            rs.send({error:false, message:'starting scan'});
                         })
                     }
                 )
@@ -51,7 +82,7 @@ module.exports = {
 
             default:
 
-                rs.send({error: true, message: 'cannot execute action ' + act});
+                rs.send({error:true, message:'cannot execute action ' + act});
 
         }
     }

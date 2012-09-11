@@ -2,14 +2,21 @@
     <%- partial("../../views/step_header.html", {step: "scan_data_files"}) %> <br/>
 
     <h2>Scan Data Files</h2>
-
+    <p>This list shows the progress of files being scanned line by line into
+    the repository. </p>
+    <p><b>YOU DO NOT HAVE TO WAIT/KEEP THIS PAGE OPEN</b> for scanning to
+        continue as a background action.
+    </p>
+    <div id="file_list" class="clearfix" style="max-height: 20em; overflow: scroll;">
+    </div>
     <fieldset>
         <legend>Init/Reset Scanning</legend>
         Clear the status of any previous scans. If this is your first time through this wizard, click this button:
         <br/>
         <button id="restart_parsing" class="btn btn-primary">Restart Parsing</button>
-        <div id="file_list" style="max-height: 20em; overflow: scroll;">
-        </div>
+        <small> &lt;-- Ordinarily you should click this once, to start scanning files into the repository.
+          <br />  <span style="color: red"><b>CLICKING A SECOND TIME  start scanning from zero.</b></span> </small>
+
     </fieldset>
 
     <%- partial("../../views/step_footer.html", {step: "scan_data_files"}) %>
@@ -37,21 +44,19 @@
 <script language="javascript">
     var refresh_interval = null;
 
-    function refresh_file_list(){
-        if (!refresh_interval){
-            refresh_interval = setInterval(function(){
-                $('#file_list').load('/noogle/file_list');
-            }, 1500);
+    function refresh_file_list() {
+        if (!refresh_interval) {
+            clearInterval(refresh_interval);
         }
+        refresh_interval = setInterval(function () {
+            $('#file_list').load('/noogle/file_list');
+        }, 1500);
     }
 
-    $(function () {
-        refresh_file_list();
-    })
+    $(refresh_file_list)
 
-    $('#restart_parsing').on('click',function () {
-        $.get('/noogle/file_list?init=true');
-        refresh_file_list();
+    $('#restart_parsing').on('click', function () {
+        $.get('/noogle/do/init_and_scan', refresh_file_list);
     })
 
     /*

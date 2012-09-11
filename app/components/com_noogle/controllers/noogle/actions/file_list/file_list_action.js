@@ -9,6 +9,7 @@ var path = require('path');
 var http = require('http');
 var url = require('url');
 var write_chat = require('write_chat');
+var _DEBUG = false;
 
 var FILE_ROOT = path.resolve(__dirname, '../../../../chat_files');
 
@@ -41,7 +42,7 @@ module.exports = {
 
         } else {
             self.models.noogle_file.active().sort('domain, file').exec(function (err, files) {
-                console.log('processing files');
+                if (_DEBUG)     console.log('processing files');
                 if (err) {
                     rs.emit('input_error', rs, err);
                 } else {
@@ -62,7 +63,7 @@ module.exports = {
             return m;
         }, {files:0, parsed:0});
 
-        console.log('output');
+        if (_DEBUG) console.log('output');
         this.on_output(rs, {stats:stats, files:files})
     }
 
