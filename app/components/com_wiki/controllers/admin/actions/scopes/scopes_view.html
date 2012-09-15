@@ -1,0 +1,35 @@
+<div ng-app="scopes">
+
+    <div ng-controller="ScopesCtrl">
+        <h1>Wiki Scopes</h1>
+
+        <p>A Wiki "Scope" is a topic cloud wherein all articles' wiki links refer to articles in the same scope</p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    &nbsp;
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="article in scopes | orderBy: 'name'">
+                <td>{{article.name }}</td>
+                <td>{{article.title }}</td>
+                <td>
+                    <button class="btn">Edit</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-primary" ng-click="add_scope()">Add Scope</button>
+    </div>
+</div>
