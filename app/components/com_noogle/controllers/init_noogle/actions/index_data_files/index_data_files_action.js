@@ -27,7 +27,9 @@ module.exports = {
 
     on_get_input:function (rs) {
         var self = this;
-        self.on_get_process(rs);
+        this.models.noogle_file.active().sort('domain, file-').exec(function(err, files){
+            self.on_get_process(rs, files);
+        })
     },
 
     on_get_process:function (rs) {

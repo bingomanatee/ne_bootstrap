@@ -31,17 +31,45 @@
     <table class="table" border="0" cellpadding="0" cellspacing="0">
         <thead>
         <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>File</th>
-            <th>Host</th>
-            <th>Size</th>
+            <th class="right">#</th>
+            <th class="right">Date</th>
+            <th class="right">File</th>
+            <th class="right">Host</th>
+            <th class="right">Size</th>
         </tr>
         </thead>
         <tbody id="file_rows">
         <tr><td colspan=5 class="placeholder_cell"></td></tr>
         </tbody>
     </table>
+
+    <% if (files){ %>
+<h3>Files Already Indexed</h3>
+
+
+    <table class="table" border="0" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th class="right">#</th>
+            <th class="right d">Date</th>
+            <th class="">File</th>
+            <th class="d">Host</th>
+            <th class="right">Size</th>
+        </tr>
+        </thead>
+        <tbody style="max-height: 40em; overflow: scroll">
+        <% files.forEach(function(file){ %>
+        <tr><td class="right"><%= file._id %></td>
+        <td class="right d"><%= file.file.split('.')[0] %></td>
+        <td class=""><%= file.domain %>/<%= file.file %></td>
+            <td class="d">http://<%= file.domain %></td>
+            <td class="right">big</td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+
+    <% } %>
     <%- partial("../../views/step_footer.html", {step: "index_data_files"}) %>
 </form>
 <!-- Modal -->
