@@ -78,3 +78,4 @@
 /app/components/com_noogle/vendor/elasticsearch-0.19.9/data/elasticsearch/nodes/0/indices/twitter/0/index/segments.gen
 /app/components/com_noogle/vendor/elasticsearch-0.19.9/data/elasticsearch/nodes/0/indices/twitter/0/index/_checksums-1346703038509
 .DS_Store
+/app/components/com_noogle/vendor/elasticsearch-0.19.9/data/
