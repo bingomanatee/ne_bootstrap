@@ -49,16 +49,22 @@ module.exports = function (mongoose_inject) {
                     }
                 },
 
-                scope:function (scope, cb) {
-                    this.find_one({scope_root:true, scope:scope, deleted: false}).select('-versions').exec(cb);
+                scope:function (scope, cb, full) {
+                    var q = this.find_one({scope_root:true, scope:scope, deleted: false});
+                    if (!full) q.select('-versions');
+                    q.exec(cb);
                 },
 
-                article: function(scope, article, cb){
-                    this.find_one({scope: scope, name: article, deleted: false}).select('-versions').exec(cb);
+                article: function(scope, article, cb, full){
+                    var q = this.find_one({scope: scope, name: article, deleted: false});
+                    if (!full) q.select('-versions');
+                    q.exec(cb);
                 },
 
-                scopes:function (cb) {
-                    this.find({scope_root:true}).select('-versions').sort('name').exec(cb);
+                scopes:function (cb, full) {
+                    var q = this.find({scope_root:true});
+                    if (!full) q.select('-versions');
+                    q.sort('name').exec(cb);
                 },
 
                 preserve:function (doc, new_data) { // call this method BEFORE you start saving updated data to the record
