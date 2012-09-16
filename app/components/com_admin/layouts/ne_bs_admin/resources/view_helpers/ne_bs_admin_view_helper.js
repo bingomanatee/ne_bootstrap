@@ -47,6 +47,24 @@ module.exports = {
                         title: 'Tasks'
                     }
                 ]
+            },
+            {
+                title: 'Wiki',
+                links: [
+                    {
+                        link: '/admin/wiki/scopes',
+                        title: 'Scopes'
+                    }
+                ]
+            },
+            {
+                title: 'Factory',
+                links: [
+                    {
+                        link: '/admin/factory/make',
+                        title: 'Site Structure'
+                    }
+                ]
             }
         ];
         cb();
