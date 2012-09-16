@@ -1,0 +1,111 @@
+<script type="text/javascript" language="javascript">
+    var article = "<%= article.name %>";
+    var scope = "<%= article.scope %>";
+    
+</script>
+<script type="text/javascript" language="javascript"
+        src="/js/wiki/wiki.js?scope=<%= article.scope %>"
+        >
+
+</script>
+<h1>Edit Article <%= article.scope %>:&quot;<%=article.title %>&quot; <span style="color: #808080">(<%= article.name %>)</span></h1>
+<div ng-app="scopes" class="row">
+    <span ng-controller="ScopesCtrl">
+    <div class="span8">
+
+        <form class="form" method="POST" action="/wiki/ae" onsubmit="return false">
+            <table class="table">
+                <tbody>
+                <tr class="{{title_row_class}}">
+                    <td>
+                        <label class="control-label" for="inputTitle">
+                            Title
+                        </label>
+                    </td>
+                    <td>
+                        <input id="inputTitle" type="text" class="input-xlarge" ng-model="edit_article.title"
+                               name="title"/>
+                    </td>
+                    <td>
+                        <span class="help-inline" ng-visibile="title_error">{{title_error}}</span>
+                    </td>
+                </tr>
+                <tr class="{{summary_row_class}}">
+                    <td colspan="3">
+                        <label style="float: right"><input type="checkbox" ng-model="summary_preview" /> Preview</label>
+                        <label class="control-label" for="inputSummary">Summary</label>
+
+                        <br /><textarea  style="padding: 0px" id="inputSummary" name="summary" class="mono text_region"
+                                  ng-model="edit_article.summary" ng-show="!summary_preview"
+                                  rows="5"></textarea>
+                        <div id="summary_md" class="text_region" ng-show="summary_preview">
+                        </div>
+
+                        <br/>
+                        <small>This is a markdown-enabled field</small>
+                        <span class="help-inline" ng-visibile="summary_error">{{summary_error}}</span>
+                    </td>
+                </tr>
+                <tr class="{{content_row_class}}">
+                    <td colspan="3">
+                        <label style="float: right"><input type="checkbox" ng-model="content_preview" /> Preview</label>
+                        <label class="control-label" for="inputContent">Content</label>
+
+
+                        <br /><textarea style="padding: 0px" id="inputContent" name="content" class="mono content_region"
+                                  ng-model="edit_article.content" ng-show="!content_preview"
+                                  rows="5"></textarea>
+                        <div id="content_md" class="content_region" ng-show="content_preview">
+                        </div>
+
+                        <br/>
+                        <small>This is a markdown-enabled field</small>
+                        <span class="help-inline" ng-visibile="content_error">{{content_error}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        &nbsp;
+                    </th>
+                    <td>
+                        <button name="cancel" class="btn cancel" type="submit">Cancel</button>
+
+                        <button name="add" ng-show="can_submit" ng_click="update_article()" class="btn btn-primary" type="submit">
+                            <i class="icon-check"></i>
+                            Update Article</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div class="span4">
+
+        <h3>Recent Updates:</h3>
+
+        -- none --
+    </div>
+</span>
+</div>
+
+<style>
+    .mono {
+        white-space: pre;
+        font-family: Monaco, "Courier New", Courier, monospace;
+        font-size: 85%;
+    }
+    .text_region {
+        height: 12em;
+        overflow: scroll;
+        width: 100%;
+        border: 1px solid rgb(153,153,153);
+    }
+
+    .content_region {
+        height: 18em;
+        overflow: scroll;
+        width: 100%;
+        border: 1px solid rgb(153,153,153);
+    }
+
+</style>

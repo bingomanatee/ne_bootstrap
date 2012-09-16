@@ -4,5 +4,7 @@
         "//code.angularjs.org/1.1.0/angular-resource.min.js"
     ],
 
-    "route_prefix": "/admin/wiki"
+    "route_prefix": "/admin/wiki",
+
+    "layout_name": "ne_bs_admin"
 }

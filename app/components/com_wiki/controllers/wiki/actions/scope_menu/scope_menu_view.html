@@ -1,0 +1,8 @@
+<div class="scope_menu">
+    <h3><%= scope.title %></h3>
+    <ol>
+        <% items.forEach(function(si){ %>
+        <li><a href="/wiki/<%= si.scope %>"><%= si.name %></a></li>
+        <% }) %>
+    </ol>
+</div>

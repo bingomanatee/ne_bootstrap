@@ -5,8 +5,10 @@
     "post_route":"*/add_scope",
     "delete_route":"*/add_scope",
 
-    "javascript": [
-        "/admin/js/wiki/add_scope/add_scope.js",
-        "/admin/js/wiki/marked.js"
+    "javascript":[
+        "/js/wiki/async.js",
+        "/js/wiki/marked.js",
+        "/js/wiki/wiki.js",
+        "/admin/js/wiki/add_scope/add_scope.js"
     ]
 }

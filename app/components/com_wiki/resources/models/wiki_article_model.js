@@ -25,10 +25,6 @@ module.exports = function (mongoose_inject) {
 
         var arch_fields = _.keys(arch_schema_def);
 
-        var archive_schema = new mongoose_inject.Schema(
-            arch_schema_def
-        )
-
         var full_schema_def = _.extend({
             name:{type:'string', index:true},
             versions:[arch_schema_def],
@@ -53,11 +49,19 @@ module.exports = function (mongoose_inject) {
                     }
                 },
 
-                scopes:function (cb) {
-                    this.find({scope_root: true}).sort('name').exec(cb);
+                scope:function (scope, cb) {
+                    this.find_one({scope_root:true, scope:scope, deleted: false}).select('-versions').exec(cb);
                 },
 
-                preserve:function (doc) { // call this method BEFORE you start saving updated data to the record
+                article: function(scope, article, cb){
+                    this.find_one({scope: scope, name: article, deleted: false}).select('-versions').exec(cb);
+                },
+
+                scopes:function (cb) {
+                    this.find({scope_root:true}).select('-versions').sort('name').exec(cb);
+                },
+
+                preserve:function (doc, new_data) { // call this method BEFORE you start saving updated data to the record
                     if (!doc.versions) {
                         doc.versions = [];
                     }
@@ -73,11 +77,21 @@ module.exports = function (mongoose_inject) {
                         doc.markModified('versions');
                     }
 
+                    if (new_data){
+                        arch_fields.forEach(function (key) {
+                            console.log('wiki article: setting %s to %s', key, new_data[key]);
+                            doc[key] = new_data[key];
+                        })
+                    }
+                    doc.write_date = new Date();
+
                     return doc;
                 },
 
                 pre_save:function (doc, author, date) {
-                    doc.author = author;
+                    if (author) {
+                        doc.author = author;
+                    }
                     doc.write_date = date ? date : new Date();
                     return doc;
                 }

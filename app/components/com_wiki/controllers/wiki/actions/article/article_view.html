@@ -1,0 +1,53 @@
+<% if (article.scope_root){ %>
+        <h1><%= article.title %>: home
+            <button class="btn pull-right"
+                    onclick="document.location='/wiki/se/<%= article.scope %>'; return false"
+                    ><i class="icon-pencil"></i> Edit Scope Article
+            </button>
+        </h1>
+        <% } else { %>
+<h1><%= article.scope %>: <%= article.title %>
+    <button class="btn pull-right"
+            onclick="document.location='/wiki/ae/<%= article.scope %>/<%= article.name %>'; return false"
+            ><i class="icon-pencil"></i> Edit Article
+    </button></h1>
+        <% } %>
+
+<article style="display: none">
+    <div class="summary">
+<%- article.summary %>
+    </div>
+    <hr />
+    <div class="content"><%- article.content %></div>
+</article>
+<script type="text/javascript" language="javascript"
+        src="/js/wiki/wiki.js?source=<%= article.source %>">
+</script>
+<script type="text/javascript" language="javascript">
+    $(function(){
+
+        var hs = $('article .summary').html();
+
+        var hcount = 0;
+
+        wiki(hs, function(err, txt){
+            $('article .summary').html(txt);
+            show_article();
+        })
+
+        var hc = $('article .content').html();
+
+        wiki(hc, function(err, txt){
+            $('article .content').html(txt);
+            show_article();
+        })
+
+function        show_article(){
+    if (++hcount > 1){
+        $('article').show();
+    }
+}
+
+    })
+
+</script>

@@ -24,7 +24,10 @@
                 <td>{{article.name }}</td>
                 <td>{{article.title }}</td>
                 <td>
-                    <button class="btn">Edit</button>
+                    <button class="btn" ng-click="view_scope(article)">View</button>
+                </td>
+                <td>
+                    <button class="btn" ng-click="edit_scope(article)">Edit</button>
                 </td>
             </tr>
             </tbody>

@@ -1,0 +1,20 @@
+<!-- -------- START sidebar well -------- -->
+<div class="well well-small sidebar-nav">
+    <ul class="nav nav-list"><%
+        sidebar.forEach(function(sidebar_item){ %>
+<li class="nav-header">
+<%- sidebar_item.title %>
+</li>
+<% sidebar_item.links.forEach(function(link){
+if (link.modal) {
+  %><li><%- partial('modal_link.html', {link: link}).replace(/\n/g, ' ') %><%- link.title %></a></li><%
+        } else if (link.link) {
+%><li><a href="<%- link.link %>"><%- link.title %></a></li><%
+        } else {
+%><li><%- link.title %></li><%
+        }// modal
+ }) // end sidebar_item.links.foreach
+ })// end sidebar.forEach
+ %></ul>
+</div>
+<!-- -------- END sidebar well -------- -->

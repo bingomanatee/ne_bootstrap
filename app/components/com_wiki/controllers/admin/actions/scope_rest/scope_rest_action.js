@@ -41,7 +41,12 @@ module.exports = {
 
     on_post_process:function (rs, input) {
         var self = this;
-        rs.send(input)
+        input.scope = input.name;
+        input.scope_root = true;
+        this.model().pre_save(input);
+        this.model().put(input, function(err, new_scope){
+            rs.send(new_scope)
+        })
     },
 
     /* ****** PUT ****** */

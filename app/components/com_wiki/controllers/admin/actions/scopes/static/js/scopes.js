@@ -1,7 +1,7 @@
 angular.module('scopes', ['scopesServices']);
 
-angular.module('scopesServices', ['ngResource'])
-    factory('Scopes',function ($resource) {
+angular.module('scopesServices', ['ngResource']).factory('Scopes',
+    function ($resource) {
         return $resource('/admin/wiki/scope_rest/:_id', {_id:"@_id"}, {
             get:{method:'GET'},
             query:{method:'GET', isArray:true},
@@ -9,33 +9,31 @@ angular.module('scopesServices', ['ngResource'])
             update:{method:'PUT' },
             delete:{method:'DELETE'}
         });
-    });/*..factory('WizardSteps', function ($resource) {
-        return $resource('/admin/wizard/step_rest/:_id', {_id:"@_id"}, {
-            get:{method:'GET'},
-            query:{method:'GET', isArray:true},
-            add:{method:'POST' },
-            update:{method:'PUT' },
-            delete:{method:'DELETE'}
-        });
-    }); */
+    });
 
-function ScopesCtrl($scope, $filter, $compile) {
+function ScopesCtrl($scope, $filter, $compile, Scopes) {
 
     /* *************** MODEL ************************** */
 
-    $scope.scopes = [
-        {name: 'foo', title: 'Foo', _id: 1},
-        {name: 'bar', title: 'Bar', _id: 2},
-        {name: 'vey', title: 'Vey', _id: 3}
-    ];  // Scopes.query();
+    $scope.scopes = Scopes.query(function (e, scopes) {
+        console.log('got: ', e, scopes);
+    });  // Scopes.query();
     $scope.colspan = 7;
 
-    $scope.add_scope = function(){
-        document.location='/admin/wiki/add_scope';
+    $scope.add_scope = function () {
+        document.location = '/admin/wiki/add_scope';
+    }
+
+    $scope.edit_scope = function (s) {
+        document.location = '/admin/wiki/edit_scope/' + s.scope;
+    }
+
+    $scope.view_scope = function (s) {
+        document.location = '/wiki/s/' + s.scope;
     }
 
 }
 
-ScopesCtrl.$inject = ['$scope', '$compile', 'Scopes'];
+ScopesCtrl.$inject = ['$scope', '$filter', '$compile', 'Scopes'];
 
 
