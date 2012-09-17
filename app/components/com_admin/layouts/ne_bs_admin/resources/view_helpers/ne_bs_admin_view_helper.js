@@ -24,7 +24,43 @@ module.exports = {
             }
 
         })
+
+
+        var member = rs.session('member');
+        if (member) {
+            var member_menu = {
+                title:'Membership',
+                links:[
+                    {
+                        title:'viewing as <br />' + member.member_name
+                    },
+                    {
+                        link:'/sign_out',
+                        title:'Sign Out'
+                    }
+                ]
+            }
+
+        } else {
+            var member_menu = {
+                title:'Membership',
+                links:[
+                    {
+                        modal:'/sign_in',
+                        title:'Sign in'
+                    },
+                    {
+                        link:'/join_us',
+                        title:'Join Us'
+                    }
+                ]
+            }
+        }
+
         input.sidebar = [
+
+            member_menu,
+
             {  title:'Administration',
                 links:[
                     {link: '/', title: 'Site Home'},
