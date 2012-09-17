@@ -12,7 +12,7 @@ module.exports = {
             if (err) {
                 self.emit('validate_error', rs, err);
             } else if (can) {
-                if (rs.has_content('name', 'tasks')) {
+                if (rs.has_content('role.name', 'role.tasks')) {
                     self.on_input(rs);
                 } else {
                     self.emit('validate_error', rs, 'missing name or tasks');
@@ -26,10 +26,11 @@ module.exports = {
     _on_validate_error_go:'/',
 
     on_input:function (rs) {
-        this.on_process(rs, rs.req_props);
+        this.on_process(rs, rs.req_props.role);
     },
 
     on_process:function (rs, input) {
+
         var self = this;
         var new_role = {
             name:input.name,
@@ -40,7 +41,7 @@ module.exports = {
             if (err) {
                 self.emit('process_error', rs, err);
             } else if (new_role_record) {
-                rs.flash('info', 'created new role ', +new_role_record.name);
+                rs.flash('info', 'created new role ' +new_role_record.name);
                 rs.send(new_role_record.toJSON());
             } else {
                 self.emit('process_error', rs, 'Cannot create ' + util.inspect(new_role));

@@ -15,9 +15,9 @@
     <tr>
         <% columns.forEach(function(c, i){ %>
         <% if (c.head){ %>
-        <th <% if (c.template){ %> nowrap="nowrap" <% } %> ><%- c.template ? c.template(r, c):  r[c.field] %></th>
+        <th <% if (c.nowrap){ %> nowrap="nowrap" <% } %> ><%- c.template ? c.template(r, c):  r[c.field] %></th>
         <% } else { %>
-        <td <% if (c.template){ %> nowrap="nowrap" <% } %> ><%-  c.template ? c.template(r, c): r[c.field] %></td>
+        <td <% if (c.nowrap){ %> nowrap="nowrap" <% } %> ><%-  c.template ? c.template(r, c): r[c.field] %></td>
         <% } // head
         %>
         <% }) // columns

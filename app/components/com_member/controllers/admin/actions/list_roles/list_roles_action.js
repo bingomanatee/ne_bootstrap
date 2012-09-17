@@ -56,12 +56,12 @@ module.exports = {
             title:'Member Roles',
             data:roles,
             columns:[
-                {label:'Name', field:'name', width:'12em'},
+                {label:'Name',  nowrap: true,field:'name', width:'12em'},
                 {label: 'Tasks', template: _show_tasks
-                },{
+                },{ nowrap: true,
                     label: 'Edit Role', template: _edit_button
                 },
-                {
+                { nowrap: true,
                     label: 'Delete Role', template: _delete_button
                 }
             ]}
