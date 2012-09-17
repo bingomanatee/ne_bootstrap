@@ -19,11 +19,6 @@ module.exports = {
 
     init:function (rs, input, cb) {
 
-        var site_menu =
-        {  title:'Site',
-            links:[
-                {link:'/', title:'Home'}
-            ]}
 
         if (input.sidebar) return cb();
 
@@ -31,6 +26,12 @@ module.exports = {
             // only apply this sidebar to the layout that we know about.
             return cb();
         }
+
+        var site_menu =
+        {  title:'Site',
+            links:[
+                {link:'/', title:'Home'}
+            ]}
 
         var member = rs.session('member');
         if (member) {
@@ -62,6 +63,7 @@ module.exports = {
                 ]
             }
         }
+
         input.sidebar = [site_menu, member_menu];
 
         if (member){
