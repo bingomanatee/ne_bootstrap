@@ -2,8 +2,8 @@ var NE = require('nuby-express');
 var mm = NE.deps.support.mongoose_model;
 var util = require('util');
 var _ = require('underscore');
-var _member_signin = require('./libs/member_signin');
-var _member_auth = require('./libs/member_auth');
+var _member_signin = require('member_signin');
+var _member_auth = require('member_auth');
 
 var model_def = {
     name:"member",
@@ -37,21 +37,21 @@ module.exports = function (mongoose_inject) {
         }
 
         var schema = new mongoose_inject.Schema({
-            real_name:String,
-            member_name:{type:String, required:true, index:{unique:true}},
-            pass:String,
+            real_name:'string',
+            member_name:{type:'string', required:true, index:{unique:true}},
+            pass:'string',
             meta_fields:mongoose_inject.Schema.Types.Mixed,
             deleted:{type:Boolean, default:false},
-            location:String,
-            country:String,
-            locale:String,
-            email:String,
-            public_profile:String,
-            private_profile:String,
-            roles:[String],
-            enc_method:{type:String, enum:['md5', 'sha1', 'sha256', 'ripemd160']},
-            enc_envelope:{type:String},
-            admin_notes:String
+            location:'string',
+            country:'string',
+            locale:'string',
+            email:'string',
+            public_profile:'string',
+            private_profile:'string',
+            roles:['string'],
+            enc_method:{type:'string', enum:['md5', 'sha1', 'sha256', 'ripemd160']},
+            enc_envelope:{type:'string'},
+            admin_notes:'string'
         });
 
         _model = mm.create(schema, model_def, mongoose_inject);
