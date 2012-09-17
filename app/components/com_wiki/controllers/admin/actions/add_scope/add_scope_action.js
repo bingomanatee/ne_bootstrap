@@ -6,9 +6,18 @@ module.exports = {
 
     /* ****** GET ****** */
 
+
     on_get_validate:function (rs) {
         var self = this;
-        self.on_get_input(rs)
+        this.models.member.can(rs, ['crate scope'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_get_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to manage scopes')
+            }
+        })
     },
 
     on_get_input:function (rs) {
@@ -32,7 +41,7 @@ module.exports = {
         self.on_output(rs, input)
     },
 
-    /* ****** POST ****** */
+    /* ****** POST ****** *
 
     on_post_validate:function (rs) {
         var self = this;
@@ -50,7 +59,7 @@ module.exports = {
         rs.send(input)
     },
 
-    /* ****** PUT ****** */
+    /* ****** PUT ****** *
 
     on_put_validate:function (rs) {
         var self = this;
@@ -68,7 +77,7 @@ module.exports = {
         rs.send(input)
     },
 
-    /* ****** DELETE ****** */
+    /* ****** DELETE ****** *
 
     on_delete_validate:function (rs) {
         var self = this;
@@ -86,5 +95,5 @@ module.exports = {
         rs.send(input)
     },
 
-    a:'a' // last comma
+    a:'a' // last comma */
 }

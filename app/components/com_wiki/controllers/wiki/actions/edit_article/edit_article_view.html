@@ -8,10 +8,14 @@
         >
 
 </script>
-<h1>Edit Article <%= article.scope %>:&quot;<%=article.title %>&quot; <span style="color: #808080">(<%= article.name %>)</span></h1>
-<div ng-app="scopes" class="row">
+<div ng-app="scopes">
     <span ng-controller="ScopesCtrl">
-    <div class="span8">
+    <h1> <button class="btn pull-right" ng-click="show_history()" ><i class="icon-search"></i> Show History
+    </button>
+        Edit Article <%= article.scope %>:&quot;<%=article.title %>&quot; <span style="color: #808080">(<%= article.name %>)</span></h1>
+
+    <div class="row">
+    <div class="{{main_span}}">
 
         <form class="form" method="POST" action="/wiki/ae" onsubmit="return false">
             <table class="table">
@@ -79,13 +83,26 @@
             </table>
         </form>
     </div>
-    <div class="span4">
+    <div class="span4" ng-show="history">
+<div class="well">
 
-        <h3>Recent Updates:</h3>
+        <h3>Revision history:</h3>
 
-        -- none --
+        <table>
+            <thead>
+            <th>Date</th>
+            <th>Author</th>
+            </thead>
+            <tr ng-repeat="article in versions">
+                <td>{{ article.write_date }}</td>
+                <td>{{ article.author }}</td>
+            </tr>
+        </table>
+    </div>
     </div>
 </span>
+    </div>
+
 </div>
 
 <style>

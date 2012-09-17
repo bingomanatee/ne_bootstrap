@@ -26,7 +26,7 @@ module.exports = {
             if (err) {
                 self.emit('input_error', rs, err);
             } else if (article) {
-                self.on_process(rs, article)
+                self.on_get_process(rs, article)
             } else {
                 self.emit('input_error',
                     util.format('cannot find article %s in scope %s',
@@ -131,5 +131,5 @@ module.exports = {
         rs.send(input)
     },
 
-    a:'a' // last comma
+    _on_error_go: true
 }

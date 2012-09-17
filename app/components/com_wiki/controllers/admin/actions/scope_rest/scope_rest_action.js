@@ -30,7 +30,15 @@ module.exports = {
 
     on_post_validate:function (rs) {
         var self = this;
-        self.on_post_input(rs)
+        this.models.member.can(rs, ['crate scope'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_post_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to manage scopes')
+            }
+        })
     },
 
     on_post_input:function (rs) {
@@ -43,7 +51,7 @@ module.exports = {
         var self = this;
         input.scope = input.name;
         input.scope_root = true;
-        this.model().pre_save(input);
+        this.model().pre_save(input, rs.session('member')._id);
         this.model().put(input, function(err, new_scope){
             rs.send(new_scope)
         })
@@ -71,7 +79,16 @@ module.exports = {
 
     on_delete_validate:function (rs) {
         var self = this;
-        self.on_delete_input(rs)
+        this.models.member.can(rs, ['crate scope', 'edit any scope', 'delete any scope'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_delete_input(rs)
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to manage scopes')
+            }
+        })
+
     },
 
     on_delete_input:function (rs) {
@@ -85,5 +102,5 @@ module.exports = {
         rs.send(input)
     },
 
-    a:'a' // last comma
+    _on_error_go: true
 }

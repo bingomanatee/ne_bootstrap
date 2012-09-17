@@ -1,4 +1,4 @@
-<div ng-app="scopes">
+<div ng-app="scopes" xmlns="http://www.w3.org/1999/html">
 
     <div ng-controller="ScopesCtrl">
         <h1>Wiki Scopes</h1>
@@ -15,6 +15,9 @@
                     Title
                 </th>
                 <th>
+                    Creator
+                </th>
+                <th>
                     &nbsp;
                 </th>
             </tr>
@@ -23,11 +26,14 @@
             <tr ng-repeat="article in scopes | orderBy: 'name'">
                 <td>{{article.name }}</td>
                 <td>{{article.title }}</td>
+                <td>{{ article.creator.member_name }}</td>
                 <td>
-                    <button class="btn" ng-click="view_scope(article)">View</button>
+                    <button class="btn" ng-click="view_scope(article)">
+                        <i class="icon-search"></i> View</button>
                 </td>
                 <td>
-                    <button class="btn" ng-click="edit_scope(article)">Edit</button>
+                    <button class="btn" ng-click="edit_scope(article)">
+                        <i class="icon-edit"></i> Edit</button>
                 </td>
             </tr>
             </tbody>

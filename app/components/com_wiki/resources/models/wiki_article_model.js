@@ -17,7 +17,7 @@ module.exports = function (mongoose_inject) {
         var arch_schema_def = {
             title:'string',
             author:{ type:mongoose_inject.Schema.Types.ObjectId, ref:'member' },
-            write_date:'string',
+            write_date:'date',
             summary:'string',
             content_type:{type:'string', enum:['text', 'html', 'json']},
             content:'string'
@@ -30,6 +30,7 @@ module.exports = function (mongoose_inject) {
             versions:[arch_schema_def],
             deleted:{type:'boolean', default:false},
             scope:{type:'string', index:true},
+            creator:{ type:mongoose_inject.Schema.Types.ObjectId, ref:'member' },
             scope_root:{type:'boolean', default:false}
         }, arch_schema_def);
 
@@ -50,21 +51,21 @@ module.exports = function (mongoose_inject) {
                 },
 
                 scope:function (scope, cb, full) {
-                    var q = this.find_one({scope_root:true, scope:scope, deleted: false});
+                    var q = this.find_one({scope_root:true, scope:scope, deleted:false});
                     if (!full) q.select('-versions');
-                    q.exec(cb);
+                    q.populate('author').populate('creator').exec(cb);
                 },
 
-                article: function(scope, article, cb, full){
-                    var q = this.find_one({scope: scope, name: article, deleted: false});
+                article:function (scope, article, cb, full) {
+                    var q = this.find_one({scope:scope, name:article, deleted:false});
                     if (!full) q.select('-versions');
-                    q.exec(cb);
+                    q.populate('author').populate('creator').exec(cb);
                 },
 
                 scopes:function (cb, full) {
                     var q = this.find({scope_root:true});
                     if (!full) q.select('-versions');
-                    q.sort('name').exec(cb);
+                    q.sort('name').populate('author').populate('creator').exec(cb);
                 },
 
                 preserve:function (doc, new_data) { // call this method BEFORE you start saving updated data to the record
@@ -83,7 +84,7 @@ module.exports = function (mongoose_inject) {
                         doc.markModified('versions');
                     }
 
-                    if (new_data){
+                    if (new_data) {
                         arch_fields.forEach(function (key) {
                             console.log('wiki article: setting %s to %s', key, new_data[key]);
                             doc[key] = new_data[key];
@@ -96,8 +97,13 @@ module.exports = function (mongoose_inject) {
 
                 pre_save:function (doc, author, date) {
                     if (author) {
+                        console.log('setting new scope author to ', author);
                         doc.author = author;
+                        if (!doc.creator) {
+                            doc.creator = author;
+                        }
                     }
+
                     doc.write_date = date ? date : new Date();
                     return doc;
                 }

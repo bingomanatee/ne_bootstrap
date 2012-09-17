@@ -2,14 +2,14 @@ angular.module('scopes', ['scopesServices']);
 
 angular.module('scopesServices', ['ngResource']).factory('Scopes',
     function ($resource) {
-    return $resource('/admin/wiki/scope_rest/:_id', {_id:"@_id"}, {
-        get:{method:'GET'},
-        query:{method:'GET', isArray:true},
-        add:{method:'POST' },
-        update:{method:'PUT' },
-        delete:{method:'DELETE'}
+        return $resource('/admin/wiki/scope_rest/:_id', {_id:"@_id"}, {
+            get:{method:'GET'},
+            query:{method:'GET', isArray:true},
+            add:{method:'POST' },
+            update:{method:'PUT' },
+            delete:{method:'DELETE'}
+        });
     });
-});
 
 function ScopesCtrl($scope, $filter, $compile, Scopes) {
 
@@ -25,10 +25,11 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
         summary:_def_summary,
         content:_def_content};
 
-    $scope.save_scope = function(){
-        Scopes.add($scope.new_scope, function(result){
-
-        });
+    $scope.save_scope = function () {
+        Scopes.add($scope.new_scope);
+        setTimeout(function () {
+            document.location = "/admin/wiki/scopes?flash_info=" + encodeURI('Scope Created');
+        }, 1000);
     }
 
     /* ********************* HELPERS ********************** */
