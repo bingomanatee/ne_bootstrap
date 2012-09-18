@@ -25,7 +25,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
     }
 
     $scope.edit_scope = function (s) {
-        document.location = '/admin/wiki/edit_scope/' + s.scope;
+        document.location = '/wiki/es/' + s.scope;
     }
 
     $scope.view_scope = function (s) {

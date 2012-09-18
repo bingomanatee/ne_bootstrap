@@ -4,6 +4,8 @@ var _ = require('underscore');
 var NE = require('nuby-express');
 var mm = NE.deps.support.mongoose_model;
 
+var _DEBUG = false;
+
 var _model;
 
 module.exports = function (mongoose_inject) {
@@ -50,22 +52,48 @@ module.exports = function (mongoose_inject) {
                     }
                 },
 
+                promote_basis:function (article) {
+                    if (article.scope_root) {
+                        return 'wiki.' + article.scope;
+                    } else {
+                        return 'wiki.' + article.scope + '.' + article.name;
+                    }
+                },
+
                 scope:function (scope, cb, full) {
                     var q = this.find_one({scope_root:true, scope:scope, deleted:false});
-                    if (!full) q.select('-versions');
+                    if (full) {
+                        q.populate('versions.author');
+                    } else {
+                        q.select('-versions');
+                    }
                     q.populate('author').populate('creator').exec(cb);
                 },
 
                 article:function (scope, article, cb, full) {
                     var q = this.find_one({scope:scope, name:article, deleted:false});
-                    if (!full) q.select('-versions');
+                    if (full) {
+                        q.populate('versions.author');
+                    } else {
+                        q.select('-versions');
+                    }
                     q.populate('author').populate('creator').exec(cb);
                 },
 
                 scopes:function (cb, full) {
                     var q = this.find({scope_root:true});
-                    if (!full) q.select('-versions');
+                    if (full) {
+                        q.populate('versions.author');
+                    } else {
+                        q.select('-versions');
+                    }
                     q.sort('name').populate('author').populate('creator').exec(cb);
+                },
+
+                revise:function (article, new_data, author) {
+                    this.preserve(article, new_data);
+                    this.sign(article, author);
+                    return article;
                 },
 
                 preserve:function (doc, new_data) { // call this method BEFORE you start saving updated data to the record
@@ -86,8 +114,23 @@ module.exports = function (mongoose_inject) {
 
                     if (new_data) {
                         arch_fields.forEach(function (key) {
-                            console.log('wiki article: setting %s to %s', key, new_data[key]);
-                            doc[key] = new_data[key];
+                            var value = new_data[key];
+                            switch (key) {
+                                case 'author':
+                                    if (value._id) {
+                                        value = value._id;
+                                    }
+                                    break;
+
+                                case 'creator':
+
+                                    if (value._id) {
+                                        value = value._id;
+                                    }
+                                    break;
+                            }
+                            if (_DEBUG) console.log('wiki article: setting %s to %s', key, value);
+                            doc[key] = value;
                         })
                     }
                     doc.write_date = new Date();
@@ -95,9 +138,12 @@ module.exports = function (mongoose_inject) {
                     return doc;
                 },
 
-                pre_save:function (doc, author, date) {
+                sign:function (doc, author, date) {
                     if (author) {
-                        console.log('setting new scope author to ', author);
+                        if (_DEBUG) console.log('setting new scope author to ', author);
+                        if (author._id) {
+                            author = author._id;
+                        }
                         doc.author = author;
                         if (!doc.creator) {
                             doc.creator = author;
@@ -108,7 +154,9 @@ module.exports = function (mongoose_inject) {
                     return doc;
                 }
 
-            }, mongoose_inject
+            }
+            ,
+            mongoose_inject
         )
     }
     return _model;

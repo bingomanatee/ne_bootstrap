@@ -10,6 +10,9 @@ module.exports = {
         var moved_on = false;
 
         elastic.define_index(function (err, content) {
+            if (err){
+                return self.emit('validate_error', rs, err);
+            }
             console.log('done define index: %s %s', content,  err ? err.message  :'');
             if (!moved_on) {
                 moved_on = true;
@@ -28,13 +31,13 @@ module.exports = {
     on_get_input:function (rs) {
         var self = this;
         this.models.noogle_file.active().sort('domain, file-').exec(function(err, files){
-            self.on_get_process(rs, files);
+            self.on_get_process(rs, {files: files});
         })
     },
 
-    on_get_process:function (rs) {
+    on_get_process:function (rs, input) {
         var self = this;
-        self.on_output(rs)
+        self.on_output(rs, input)
     },
 
     /* ****** POST ****** */

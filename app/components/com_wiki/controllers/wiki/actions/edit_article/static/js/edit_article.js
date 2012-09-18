@@ -26,27 +26,57 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
     /* *************** TRACKING CHANGES *************** *
 
 
-    $scope.$watch('edit_article', function (article) {
-        if (article) {
-            console.log('watching article: ', article);
-            _original_article = _.clone(article);
-        }
-    });
-*/
+     $scope.$watch('edit_article', function (article) {
+     if (article) {
+     console.log('watching article: ', article);
+     _original_article = _.clone(article);
+     }
+     });
+     */
     var _original_article = null;
 
     $scope.update_article = function () {
+        $scope.edit_article.promoted = $scope.promoted;
+        console.log('updating article...', $scope.edit_article);
         Scopes.update($scope.edit_article, function (art) {
-            // console.log('update article result: ', art);
-            if ($scope.edit_article.site_root) {
+            console.log('update article result: ', art);
+            if (art.error) {
+                alert('error saving article: ' + art.error);
+            } else {
                 if (art.scope_root) {
-                    document.location = "/wiki/s/" + art.name + '?flash_info=' + encodeURI('Updated site root article');
+                    var dest = "/wiki/s/" + art.name + '?flash_info=' + encodeURI('Updated site root article');
                 } else {
-                    document.location = "/wiki/a/" + art.scope + '/' + art.name + '?flash_info=' + encodeURI('Updated article');
+                    var dest = "/wiki/a/" + art.scope + '/' + art.name + '?flash_info=' + encodeURI('Updated article');
                 }
+                console.log('dest: ' + dest);
+                document.location = dest;
             }
         });
     }
+
+    /* ********************* PROMOTED ********************* */
+
+    var _prom_def = {
+        limit_from:false,
+        limit_from_date:$.format.date(new Date(), jQuery.format.date.defaultShortDateFormat),
+        limit_to:false,
+        limit_to_date:$.format.date(new Date(new Date().getFullYear() + 1,
+            new Date().getMonth(),
+            new Date().getDate()
+        ), jQuery.format.date.defaultShortDateFormat)
+    };
+
+    if (promoted && promoted.limit_from_date) {
+        promoted.limit_from_date = jQuery.format.date(promoted.limit_from_date, jQuery.format.date.defaultShortDateFormat)
+    }
+
+    if (promoted && promoted.limit_to_date) {
+        promoted.limit_to_date = jQuery.format.date(promoted.limit_to_date, jQuery.format.date.defaultShortDateFormat)
+    }
+
+    $scope.promote = promoted ? true : false;
+    $scope.promoted = promoted ? _.defaults(promoted, _prom_def) : _prom_def;
+
 
     /* ********************* HISTORY ********************** */
 
@@ -63,7 +93,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
             delete ah.versions;
             versions.push(ah);
             console.log('versions: ', versions);
-            _.forEach(versions, function(v){
+            _.forEach(versions, function (v) {
                 v.write_date = _date_format(v.write_date);
                 $scope.versions.push(v);
             })
@@ -91,16 +121,41 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
             );
     }
 
-    var df_template = _.template('<%= mn %> <%= day %>, <%= year %> <%= time[0] %>:<%= time[1] %>');
+    var df_template = _.template('<%= mn %> <%= day %><% if(year == new Date().getFullYear()){ %><% if (month == new Date().getMonth() + 1){ %>, <%= hour %>:<%= minute %><% } %><% } else { %>, <%= year %><% } %>');
+    var _unix_date_regex = /(.*)-(.*)-(.*)T(.*):(.*):(.*)/;
+    var _mns = ',Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec'.split(',');
 
-    function _date_format(d){
-        var date_parts = d.split(' ');
-        var dd = {};
-        dd.time = date_parts[4].split(':');
-        dd.mn = date_parts[1];
-        dd.month = _.indexOf(',Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec'.split(','), dd.mn);
-        dd.year = date_parts[3];
-        dd.day = date_parts[2];
+    function _date_format(d) {
+        if (!d) {
+            return '';
+        }
+        console.log('_date_format', d);
+
+        if (_unix_date_regex.test(d)) {
+            var dv = _unix_date_regex.exec(d);
+            dv.shift();
+            var keys = ['year', 'month', 'day', 'hour', 'minute'];
+
+            var dd = _.reduce(dv, function (dd, value) {
+                if (keys.length) dd[keys.shift()] = value;
+                return dd;
+            }, {});
+
+            dd.day = dd.day.replace(/^0/,'');
+            dd.month = dd.month.replace(/^0/, '');
+
+            dd.mn = _mns[parseInt(dd.month)];
+        } else {
+            var dd = {};
+            var date_parts = d.split(' ');
+            dd.time = date_parts[4].split(':');
+            dd.year = date_parts[3];
+            dd.day = date_parts[2];
+
+            dd.hour = time[0];
+            dd.minute = time[1];
+            dd.month = _.indexOf(_mns, dd.mn);
+        }
 
         return df_template(dd);
     }
@@ -114,7 +169,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
 
     $scope.$watch('edit_article.title', function (title) {
         if (!title) return;
-          console.log('title: ', title, _original_article);
+        console.log('title: ', title, _original_article);
 
         $scope.title_error = 'The scope title is required.' +
             ' It will be shown on the page - all characters allowed';

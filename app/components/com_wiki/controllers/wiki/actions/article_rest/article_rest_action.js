@@ -1,4 +1,5 @@
 var util = require('util');
+var _DEBUG = false;
 
 module.exports = {
 
@@ -15,6 +16,7 @@ module.exports = {
      */
 
     on_get_validate:function (rs) {
+
         var self = this;
         self.on_get_input(rs)
     },
@@ -51,41 +53,50 @@ module.exports = {
         rs.send(article);
     },
 
-    /* ****** POST ****** */
+    /* ****** POST ****** *
 
-    on_post_validate:function (rs) {
-        var self = this;
-        self.on_post_input(rs)
-    },
+     on_post_validate:function (rs) {
+     var self = this;
+     self.on_post_input(rs)
+     },
 
-    on_post_input:function (rs) {
-        var self = this;
-        var input = rs.req_props;
-        self.on_post_process(rs, input)
-    },
+     on_post_input:function (rs) {
+     var self = this;
+     var input = rs.req_props;
+     self.on_post_process(rs, input)
+     },
 
-    on_post_process:function (rs, input) {
-        var self = this;
-        rs.send(input)
-    },
+     on_post_process:function (rs, input) {
+     var self = this;
+     rs.send(input)
+     },
 
-    /* ****** PUT ****** */
+     /* ****** PUT ****** */
 
     on_put_validate:function (rs) {
+        //@TODO: granluarity for updating own scope
         var self = this;
-        self.on_put_input(rs);
+        this.models.member.can(rs, ['edit any scope'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_put_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to update scopes')
+            }
+        })
     },
 
     on_put_input:function (rs) {
         var self = this;
         var input = rs.req_props;
-        console.log('article rest put getting scope %s, article %s', input.scope, input.article);
+        if (_DEBUG) console.log('article rest put getting scope %s, article %s', input.scope, input.article);
 
-        function _article(err, article){
-            console.log('retrieved article %s', util.inspect(article));
-            if (err){
+        function _article(err, article) {
+            if (_DEBUG) console.log('retrieved article %s', util.inspect(article));
+            if (err) {
                 self.emit('input_error', rs, err);
-            } else if (article){
+            } else if (article) {
                 self.on_put_process(rs, article, input);
             } else {
                 self.emit('cannot find article ' + input.article);
@@ -101,35 +112,59 @@ module.exports = {
 
     on_put_process:function (rs, article, input) {
         var self = this;
-        console.log('put: new data %s', util.inspect(input));
-        this.model().preserve(article, input);
-        article.save(function(err, new_art){
+        var promote = input.promoted;
+        delete article.promoted;
 
+        function _promote(err, new_art) {
+            if (err) {
+                throw err;
+            }
             var j = new_art.toJSON();
-            console.log('put article %s', util.inspect(j));
+            if (_DEBUG) console.log('put article %s', util.inspect(j));
 
             delete j.versions;
-            rs.send(j)
-        })
+
+            promote.title = new_art.title;
+            promote.notes = new_art.summary; //@TODO: wiki parse
+
+            self.models.promote.promote(self.model().promote_basis(new_art), promote,
+                function (err, promotion) {
+                    //@TODO: do something with feedback.
+                    rs.send(j)
+                })
+        }
+
+        if (
+            (article.title == input.title) &&
+                (article.summary == input.summary) &&
+                (article.content == input.content)
+            ) {
+            // this article hasn't ben changed - possibly the metadata about promotion has.
+            _promote(null, article);
+        } else {
+            if (_DEBUG) console.log('put: new data %s', util.inspect(input));
+            this.model().revise(article, input, rs.session('member'));
+            article.save(_promote);
+        }
     },
 
-    /* ****** DELETE ****** */
+    /* ****** DELETE ****** *
 
-    on_delete_validate:function (rs) {
-        var self = this;
-        self.on_delete_input(rs)
-    },
+     on_delete_validate:function (rs) {
+     var self = this;
+     self.on_delete_input(rs)
+     },
 
-    on_delete_input:function (rs) {
-        var self = this;
-        var input = rs.req_props;
-        self.on_delete_process(rs, input)
-    },
+     on_delete_input:function (rs) {
+     var self = this;
+     var input = rs.req_props;
+     self.on_delete_process(rs, input)
+     },
 
-    on_delete_process:function (rs, input) {
-        var self = this;
-        rs.send(input)
-    },
-
-    _on_error_go: true
+     on_delete_process:function (rs, input) {
+     var self = this;
+     rs.send(input)
+     },
+     */
+    _on_error_go:true
 }
