@@ -172,7 +172,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
         console.log('title: ', title, _original_article);
 
         $scope.title_error = 'The scope title is required.' +
-            ' It will be shown on the page - all characters allowed';
+            ' It will be shown on the page - all characters allowed. It should be at least 3 characters long.';
         $scope.title_row_class = 'control-group error';
         if (_title_regex.test(title)) {
             $scope.title_error = '';
