@@ -22,7 +22,9 @@ module.exports = {
 
         if (input.sidebar) return cb();
 
-        if (!(_layout_name(rs, input) == 'ne_bootstrap')) {
+        var ln = _layout_name(rs, input);
+
+        if ((!(ln == 'home')) && (!(ln == 'ne_bootstrap'))) {
             // only apply this sidebar to the layout that we know about.
             return cb();
         }
