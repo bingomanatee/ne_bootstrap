@@ -5,7 +5,7 @@ module.exports = {
 
     on_get_validate:function (rs) {
         var self = this;
-        this.models.member.can(rs, ['crate scope', 'edit any scope', 'delete any scope'], function (err, can) {
+        this.models.member.can(rs, ['create scope', 'edit any scope', 'delete any scope'], function (err, can) {
             if (err) {
                 self.emit('validate_error', rs, err);
             } else if (can) {

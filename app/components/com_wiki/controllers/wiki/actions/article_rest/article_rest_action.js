@@ -124,8 +124,10 @@ module.exports = {
 
             delete j.versions;
 
-            promote.title = new_art.title;
-            promote.notes = new_art.summary; //@TODO: wiki parse
+            if (promote){
+                promote.title = new_art.title;
+                promote.notes = new_art.summary; //@TODO: wiki parse
+            }
 
             self.models.promote.promote(self.model().promote_basis(new_art), promote,
                 function (err, promotion) {

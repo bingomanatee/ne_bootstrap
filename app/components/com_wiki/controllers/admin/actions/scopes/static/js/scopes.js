@@ -21,11 +21,11 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
     $scope.colspan = 7;
 
     $scope.add_scope = function () {
-        document.location = '/admin/wiki/add_scope';
+        document.location = '/admin/wiki/create_scope';
     }
 
     $scope.edit_scope = function (s) {
-        document.location = '/wiki/es/' + s.scope;
+        document.location = '/wiki/se/' + s.scope;
     }
 
     $scope.view_scope = function (s) {

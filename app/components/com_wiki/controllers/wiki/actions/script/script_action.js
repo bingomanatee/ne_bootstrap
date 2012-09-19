@@ -16,7 +16,9 @@ on_process: function (rs,input){
 	var self = this;
     var sm = scope_menu.toString();
     console.log('scope menu: %s', sm);
-	self.on_output(rs, {parsers: ['marked_cb', sm]})
+    var scope = input.scope ? input.scope : false;
+
+	self.on_output(rs, {parsers: ['marked_cb', sm], scope: scope})
 },
 
 /* ****** GET ****** */
@@ -27,5 +29,5 @@ on_process: function (rs,input){
 
 /* ****** DELETE ****** */
 
-    a:'a' // last comma
+   _on_error_go: true
 }
