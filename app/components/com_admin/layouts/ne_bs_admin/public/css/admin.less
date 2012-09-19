@@ -12,10 +12,17 @@ footer {
     background-color: rgba(227, 227, 227, 0.67);
     font-size: 90%;
     border: none;
-}
-
-.sidebar-nav li {
-    line-height: 120%;
+    .nav-header {
+        color: #966;
+    }
+    .nav-list {
+        padding: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        li {
+            line-height: 120%;
+        }
+    }
 }
 
 @media (min-width: 767px) {
@@ -49,9 +56,6 @@ body {
 .nav > li > a:hover {
     text-decoration: none;
     background-color: rgba(255,255,0,0.25);
-}
-.sidebar-nav .nav-header {
-    color: #966;
 }
 
 .navbar-inverse .brand,

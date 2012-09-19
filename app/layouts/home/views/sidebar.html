@@ -1,7 +1,7 @@
 <!-- -------- START sidebar well -------- -->
-<div class="well well-small sidebar-nav">
-   <%
-        sidebar.forEach(function(sidebar_item){ %> <ul class="nav nav-list">
+<div class="well sidebar-nav">
+    <ul class="nav nav-list"><%
+        sidebar.forEach(function(sidebar_item){ %>
 <li class="nav-header">
 <%- sidebar_item.title %>
 </li>
@@ -14,10 +14,7 @@ if (link.modal) {
 %><li><%- link.title %></li><%
         }// modal
  }) // end sidebar_item.links.foreach
-    %>
-</ul>
-    <%
  })// end sidebar.forEach
- %>
+ %></ul>
 </div>
 <!-- -------- END sidebar well -------- -->

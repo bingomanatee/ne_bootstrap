@@ -2,25 +2,26 @@
     "name":"home",
     "static_prefix":"home_layout",
     "css":[
+        "/home_layout/css/style.css",
+        "/home_layout/css/style.less",
         "/home_layout/css/bootstrap.min.css",
-        "/home_layout/css/bootstrap-responsive.min.css",
-        "/home_layout/css/style.css"
+        "/home_layout/css/bootstrap-responsive.min.css"
     ],
     "javascript":[
-        "/home_layout/js/bootstrap.min.js",
-        "//twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js",
-        "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"
+        "/home_layout/js/vendor/bootstrap.min.js",
+        "//twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"
     ],
     "javascript_head":[
         {
-            "/home_layout/js":[
+            "/home_layout/js/vendor":[
                 "jquery-1.8.0.min.js",
                 "jquery-ui-1.8.23.custom.min.js",
                 "modernizr-2.6.1.min.js",
                 "less-1.1.3.min.js",
                 "jquery.isotope.min.js"
             ]
-        }
+        },
+        "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"
     ]
 
 }
