@@ -1,0 +1,8 @@
+{"route":"*/find", "method":"get",
+    "javascript_head":[
+        "//code.angularjs.org/1.1.0/angular.js",
+        "//code.angularjs.org/1.1.0/angular-resource.js"],
+    "javascript":[
+        "/js/noogle/find/find.js"
+    ]
+}
