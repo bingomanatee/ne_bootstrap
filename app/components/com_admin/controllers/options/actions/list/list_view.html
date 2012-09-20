@@ -2,7 +2,35 @@
 <p>Options are defined in component configuration files and can be adjusted on the fly to customize your site.</p>
 
 <div class="well-large">
-    <%- partial(helpers.nebsavr + '/data_table.html', data_table_config) %>
+
+    <table class="table table-condensed data_table">
+        <thead>
+        <tr>
+
+            <th style="width:12em">Name</th>
+
+            <th>Value</th>
+
+            <th>&nbsp;</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+<% site_options.forEach(function(option){%>
+        <tr>
+
+            <td><%- option.name %></td>
+
+            <td><%- option.value %></td>
+
+            <td><a href="#edit_option" class="btn" role="btn" data-toggle="modal"
+                   onClick="edit_name('<%- option.name %>')"><i class="icon-edit"></i> Edit Option</a></td>
+
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
 </div>
 
 
@@ -25,7 +53,7 @@
 
     function edit_name(name) {
         $('#edit_option_modal').load('/admin/option/' + name + '/edit', function () {
-
+            $('#edit_option_modal').show();
             $('#edit_option_modal form').submit(function () {
                 var d = form_data();
 
