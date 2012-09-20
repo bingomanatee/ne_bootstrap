@@ -4,6 +4,8 @@
     function wiki(txt, callback, env) {
         // <% if (scope) { %>
         var scope = "<%= scope %>";
+        // <% } else { %>
+        var scope = '';
         // <% } %>
 
         if (!callback){
@@ -24,11 +26,36 @@
             }
         }
 
+        function wiki_links(text, cb){
+            do {
+                var hit = /\[\[([^\]]+)\]\]/.exec(text);
+
+                if (hit){
+                    var holder = hit[0];
+                    var term = hit[1].split(':');
+                   var name = term.shift();
+                    if (term.length){
+                        title = term.join(' ');
+                    } else {
+                        var title = name.replace(/_/i, ' ');
+                    }
+
+                    var repl = '<a href="/wiki/a/' + scope + '/' + name + '" class="wikilink">' + title + '</a>';
+                    text = text.replace(hit[0], repl);
+
+                } else {
+                    cb(null, text);
+                }
+            } while (hit)
+            cb(null, text);
+        }
+
         async.waterfall([
                 function(cb){
                     cb(null, txt)
                 },
-<%- parsers.join(',') %>
+<%- parsers.join(',') %>,
+                wiki_links
         ], callback);
 
     }
