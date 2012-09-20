@@ -3,7 +3,7 @@
     //  <% } %>
     function wiki(txt, callback, env) {
         // <% if (scope) { %>
-        var scope = "<%= scope %>";
+        var scope = "<%=  _.isString(scope) ? scope : scope.name %>";
         // <% } else { %>
         var scope = '';
         // <% } %>
