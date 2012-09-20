@@ -53,25 +53,40 @@ module.exports = {
         rs.send(article);
     },
 
-    /* ****** POST ****** *
+    /* ****** POST ****** */
 
-     on_post_validate:function (rs) {
-     var self = this;
-     self.on_post_input(rs)
-     },
+    on_post_validate:function (rs) {
+        var self = this;
+        this.models.member.can(rs, ['create article'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_post_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to create articles')
+            }
+        })
+    },
 
-     on_post_input:function (rs) {
-     var self = this;
-     var input = rs.req_props;
-     self.on_post_process(rs, input)
-     },
+    on_post_input:function (rs) {
+        var self = this;
+        var input = rs.req_props;
+        self.on_post_process(rs, input)
+    },
 
-     on_post_process:function (rs, input) {
-     var self = this;
-     rs.send(input)
-     },
+    on_post_process:function (rs, article) {
+        var self = this;
+        self.model().sign(article, rs.session('member'));
+        self.model().put(article, function(err, art_record){
+            if (err){
+                self.emit('process_error', rs, err);
+            } else {
+                rs.send(art_record);
+            }
+        })
+    },
 
-     /* ****** PUT ****** */
+    /* ****** PUT ****** */
 
     on_put_validate:function (rs) {
         //@TODO: granluarity for updating own scope
@@ -124,7 +139,7 @@ module.exports = {
 
             delete j.versions;
 
-            if (promote){
+            if (promote) {
                 promote.title = new_art.title;
                 promote.notes = new_art.summary; //@TODO: wiki parse
             }

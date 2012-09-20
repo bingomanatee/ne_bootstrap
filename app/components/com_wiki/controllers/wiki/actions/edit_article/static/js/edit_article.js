@@ -18,7 +18,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
     var _def_summary = 'New scope summary...';
     var _def_content = "New scope content...\n <scope_menu></scope_menu>";
 
-    $scope.edit_article = Scopes.get({article:article, scope:scope},
+    $scope.edit_article = Scopes.get({article:article.name, scope:article.scope},
 
         function (article) {
             console.log('loading article ', article);

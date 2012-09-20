@@ -6,7 +6,7 @@
             </button>
         </h1>
         <% } else { %>
-<h1><%= article.scope %>: <%= article.title %>
+<h1><a href="/wiki/s/<%- article.scope %>"><%= article.scope %></a>: <%= article.title %>
     <button class="btn pull-right"
             onclick="document.location='/wiki/ae/<%= article.scope %>/<%= article.name %>'; return false"
             ><i class="icon-pencil"></i> Edit Article

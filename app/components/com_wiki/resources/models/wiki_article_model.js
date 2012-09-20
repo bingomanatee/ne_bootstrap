@@ -81,7 +81,17 @@ module.exports = function (mongoose_inject) {
                 },
 
                 scopes:function (cb, full) {
-                    var q = this.find({scope_root:true});
+                    var q = this.find({scope_root:true, deleted: false});
+                    if (full) {
+                        q.populate('versions.author');
+                    } else {
+                        q.select('-versions');
+                    }
+                    q.sort('name').populate('author').populate('creator').exec(cb);
+                },
+
+                articles_for_scope:function (scope, cb, full) {
+                    var q = this.find({scope_root:false, scope: scope, deleted: false});
                     if (full) {
                         q.populate('versions.author');
                     } else {

@@ -1,6 +1,5 @@
 <script type="text/javascript" language="javascript">
-    var article = "<%= article.name %>";
-    var scope = "<%= article.scope %>";
+    var article = <%- JSON.stringify(article) %>;
     <% if (promoted){ %>
     var promoted = <%- JSON.stringify(promoted) %>;
     <% } else { %>
@@ -18,7 +17,7 @@
     <h1>
         <button class="btn pull-right" ng-click="show_history()"><i class="icon-search"></i> Show History
         </button>
-        Edit Article <%= article.scope %>:&quot;<%=article.title %>&quot; <span style="color: #808080">(<%= article.name %>)</span>
+        Edit Article <a href="/wiki/s/<%- article.scope %>"><%= article.scope %></a>:&quot;<%=article.title %>&quot; <span style="color: #808080">(<%= article.name %>)</span>
     </h1>
 
     <div class="row-fluid">

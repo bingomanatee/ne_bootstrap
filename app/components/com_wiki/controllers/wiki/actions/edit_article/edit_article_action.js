@@ -12,8 +12,18 @@ module.exports = {
 
     on_get_validate:function (rs) {
         var self = this;
-        self.on_get_input(rs)
+        this.models.member.can(rs, ['edit any scope'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_get_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to edit articles')
+            }
+        })
     },
+
+    _on_error_go: '/',
 
     on_get_input:function (rs) {
         var self = this;
@@ -28,6 +38,11 @@ module.exports = {
                 self.models.promote.get_basis(
                     self.model().promote_basis(article),
                     function (err, promoted) {
+                        article = article.toJSON();
+                        delete article.summary;
+                        delete article.content;
+                        delete article.author;
+                        delete article.creator;
                         self.on_get_process(rs, {article:article, promoted:promoted})
                     }
                 )
