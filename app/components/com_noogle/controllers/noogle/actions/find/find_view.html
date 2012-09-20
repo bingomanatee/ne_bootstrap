@@ -1,6 +1,6 @@
 <div ng-app="messages">
     <div ng-controller="MessagesCtrl">
-        <form class="form">
+        <form class="form" class="ng-cloak">
 
             <h1>Search Noogle</h1>
 
@@ -63,26 +63,154 @@
     </span>
         </form>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Username</th>
-                <th>Messages</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="m in messages | orderBy: order_field:m_reverse">
-                <td nowrap="nowrap">{{ m.date }} </td>
-                <td>{{ m.username }}</td>
-                <td>{{ m.message }}</td>
-            </tr>
-            </tbody>
-        </table>
+        <ul class="nav nav-tabs" id="noogle_tab">
+            <li><a href="#tab_results" ng-click="tab='results'" data-toggle="tab">Results</a></li>
+            <li><a href="#tab_keywords" ng-click="tab='keywords'" data-toggle="tab">Keywords</a></li>
+        </ul>
+
+        <div id="noogle_tab_content" class="tab-content" style="overflow: visible">
+            <div class="tab-pane clearfix" id="tab_keywords" style="overflow: visible">
+                <h3>
+                    Keywords
+                </h3>
+                <div class="well well-compact">
+                    <h4>Selected</h4>
+
+                <span ng-repeat="word in words | filter:ww">
+                  <b>{{ word.word }}</b>
+                    </span>
+            </div>
+
+            <div id="word_list">
+                <span ng-repeat="word in words">
+                    <word style="{{word_style(word)}}" ng-click="word.weighted = !word.weighted">{{word.word}}</small>
+                    </word>
+                    </span>
+            </div>
+        </div>
+
+        <div class="tab-pane clearfix" id="tab_results">
+            <table class="table noogle-results">
+                <thead>
+                <tr>
+                    <th class="date" ng-click="order_field = 'date'">Date
+                        <i class="icon-arrow-up"
+                           ng-click="m_reverse = true"
+                           ng-show="(order_field=='date') && (!m_reverse)"></i>
+                        <i class="icon-arrow-down"
+                           ng-click="m_reverse = false"
+                           ng-show="(order_field=='date') && m_reverse"></i>
+                    </th>
+                    <th class="username" ng-click="order_field = 'username'">Username
+                        <i class="icon-arrow-up"
+                           ng-click="m_reverse = true"
+                           ng-show="(order_field=='username') && (!m_reverse)"></i>
+                        <i class="icon-arrow-down"
+                           ng-click="m_reverse = false"
+                           ng-show="(order_field=='username') && m_reverse"></i>
+                    </th>
+                    <th class="messages">Messages</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="m in messages | orderBy: order_field:m_reverse">
+                    <td nowrap="nowrap">{{ m.date }}</td>
+                    <td>{{ m.username }}</td>
+                    <td>{{ m.message }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <style>
     .padded .row-fluid div {
         padding: 0.5em;
     }
+
+    .noogle-results th.date {
+        width: 12%;
+        white-space: nowrap
+    }
+
+    .noogle-results   th.username {
+        width: 12%;
+        white-space: nowrap
+    }
+
+    .noogle-results  th.messages {
+
+    }
+
+
+    #tab_keywords  span {
+        display: inline-block;
+        padding: 0.1em 0.5em;
+    }
+
+    #tab_keywords div.well span
+    {
+        font-size: 150%;
+    }
+
+        /**** Isotope Filtering ****/
+
+    .isotope-item {
+        z-index: 2;
+    }
+
+    .isotope-hidden.isotope-item {
+        pointer-events: none;
+        z-index: 1;
+    }
+
+        /**** Isotope CSS3 transitions ****/
+
+    .isotope,
+    .isotope .isotope-item {
+        -webkit-transition-duration: 0.8s;
+        -moz-transition-duration: 0.8s;
+        -ms-transition-duration: 0.8s;
+        -o-transition-duration: 0.8s;
+        transition-duration: 0.8s;
+    }
+
+    .isotope {
+        -webkit-transition-property: height, width;
+        -moz-transition-property: height, width;
+        -ms-transition-property: height, width;
+        -o-transition-property: height, width;
+        transition-property: height, width;
+    }
+
+    .isotope .isotope-item {
+        -webkit-transition-property: -webkit-transform, opacity;
+        -moz-transition-property: -moz-transform, opacity;
+        -ms-transition-property: -ms-transform, opacity;
+        -o-transition-property: top, left, opacity;
+        transition-property: transform, opacity;
+    }
+
+        /**** disabling Isotope CSS3 transitions ****/
+
+    .isotope.no-transition,
+    .isotope.no-transition .isotope-item,
+    .isotope .isotope-item.no-transition {
+        -webkit-transition-duration: 0s;
+        -moz-transition-duration: 0s;
+        -ms-transition-duration: 0s;
+        -o-transition-duration: 0s;
+        transition-duration: 0s;
+    }
+
+
 </style>
+<script>
+    $(function () {
+        /*    $('#word_list').isotope({
+         // options
+         itemSelector : 'span',
+         layoutMode : 'fitRows'
+         }); */
+    })
+</script>
