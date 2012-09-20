@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var util = require('util');
 var _DEBUG = false;
-var make = require('make');
 
 module.exports = {
 
@@ -15,6 +14,7 @@ module.exports = {
     },
 
     on_process:function (rs, input) {
+        var make = require('make');
         if (_DEBUG) console.log('MAKING ACTIONS: ++++++++ %s', util.inspect(input));
         input.root += '/actions';
 

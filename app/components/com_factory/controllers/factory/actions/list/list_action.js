@@ -11,7 +11,16 @@ function _path(e){
 module.exports = {
 
     on_validate: function(rs){
-        this.on_input(rs);
+        var self = this
+        this.models.member.can(rs, ['create site elements'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_input(rs);
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to edit this site');
+            }
+        })
     },
 
     on_input: function(rs){
@@ -30,6 +39,9 @@ module.exports = {
         var routes = _.reduce(actions, function(r, a){
             return r.concat(a.get_routes(true));
         }, []);
+        routes = _.sortBy(routes, function(route){
+            return route.route;
+        });
 
         var output = {
             framework: _path(framework),
@@ -41,5 +53,7 @@ module.exports = {
         };
 
         this.on_output(rs, output);
-    }
+    },
+
+    _on_error_go: '/'
 }
