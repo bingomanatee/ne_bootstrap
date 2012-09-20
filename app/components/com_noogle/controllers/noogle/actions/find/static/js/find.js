@@ -25,6 +25,9 @@ function MessagesCtrl($scope, $filter, $compile, Messages) {
 
     $scope.size = 20;
     $scope.start = 0;
+    $scope.search = '';
+    _.extend($scope, NOOGLE_CONFIG);
+
     $scope.show_words = true;
     $scope.words = [];
 
@@ -37,10 +40,18 @@ function MessagesCtrl($scope, $filter, $compile, Messages) {
     $scope.word_style= function(word){
       //  console.log($scope.words);
         if (word.weighted){
-            return 'font-weight: bold; color: rgb(0,0,100)';
+            var out = 'font-weight: bold; color: rgb(0,0,100)';
         } else if (word.stop ){
-            return '; color: rgba(0,0,0,0.25)';
+            var out =  '; color: rgba(0,0,0,0.25)';
         }
+
+        if (word.pct > $scope.avg_word_pct){
+            out += '; font-size:150%';
+        } else if (word.pct < $scope.avg_word_pct/4){
+            out += '; font-size:75%';
+        }
+
+        return out;
     }
 
     function _is_weighted(word){   return word.weighted
@@ -54,19 +65,38 @@ function MessagesCtrl($scope, $filter, $compile, Messages) {
 
     $scope.$watch('messages', function(messages){
 
+        $scope.word_count = 0;
+
+       var _word_index = {};
+
         if (messages&& messages.length){
             var words = _.reduce($scope.messages, function(w, m){
                 var mw = m.message.toLowerCase().split(/[\W]+/i);
-                w = _.union(mw, w);
+
+                _.forEach(mw, function(w){
+                   if (_word_index[w]) {
+                       ++ _word_index[w];
+                   } else {
+                       _word_index[w] = 1;
+                   }
+                });
+
+                $scope.word_count += mw.length;
+
+                w = _.union(mw, _.uniq(w));
                 m.words = mw;
                 return w;
             }, []);
 
             words = _.sortBy(words, _.identity);
 
+            $scope.avg_word_pct = 0;
             $scope.words = _.map(words, function(w){
-                return {word: w, weighted: false, stop:_.include(_stopwords, w)};
+                var ap = _word_index[w]/$scope.word_count;
+                $scope.avg_word_pct += ap;
+                return {word: w, weighted: false, count: _word_index[w], pct: ap, stop:_.include(_stopwords, w)};
             })
+            $scope.avg_word_pct /= words.length;
 
             var users = _.reduce($scope.messages, function(u, m){
                if (!(_.include(u, m.username))){
@@ -93,10 +123,11 @@ function MessagesCtrl($scope, $filter, $compile, Messages) {
     $scope.order_field = 'date';
 
     $scope.find = function () {
+        $('#wait').modal({show: true})
 
         Messages.query({start:'' + $scope.start, size:$scope.size, search: $scope.search, format:'json'},
             function (result) {
-                console.log(result);
+                $('#wait').modal('hide')
                 $scope.messages = result.hits ? _.map(result.hits.hits, function (hit) {
                     var out = hit._source;
                     out.score = hit.score;
@@ -109,6 +140,9 @@ function MessagesCtrl($scope, $filter, $compile, Messages) {
         )
     }
 
+    if ($scope.search){
+        $scope.find();
+    }
 }
 
 MessagesCtrl.$inject = ['$scope', '$filter', '$compile', 'Messages'];

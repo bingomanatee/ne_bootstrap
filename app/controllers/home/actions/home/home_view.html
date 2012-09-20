@@ -1,5 +1,20 @@
 <h2>Welcome to Nuby Bootstrap</h2>
+<form class="form" method="get" action="/noogle/find">
 
+<h1>Search Noogle</h1>
+
+<div class="row-fluid">
+    <div class="span3"><label for="search">Search Term(s)</label></div>
+    <div class="span5">
+        <input type="text" class="input-xlarge search-query" name="search" ng-model="search" id="search"/>
+    </div>
+    <div class="span4">
+        <button ng-click="find()"
+                class="btn btn-primary inverse"><i class="icon-search"></i> Search
+        </button>
+    </div>
+</div>
+</form>
 <div id="container">
 <div class="element other nonmetal   " data-symbol="H" data-category="other">
     <p class="number">1</p>

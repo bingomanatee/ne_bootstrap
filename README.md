@@ -1,12 +1,12 @@
-# Nuby-Expres Home
+# Nuby-Expres Bootstrap
 
-This is a "seed" project for housing your Nuby-Express site.
+This is a "seed" project for a Nuby-Express site, styled with Twitter Bootstrap. It also contains the
+Noogle module.
 
-Note there are two roots.
+There are two "launch" scripts.
 
  * index.js is what you should launch in node or forever -- sudo node.js
-   (in practice I find you often need sudo to access port 80). It is a script = there is nothing exposed
-   via module.exports.
+   (in practice I find you often need sudo to access port 80).
 
  * web.js is a true module. It exposes a function that launches a server and returns the framework as the output
    of that function. Note that you can pass configuration options into the function to
@@ -18,18 +18,13 @@ and database and not worry about overlap. (as long as you destroy the database a
 
 By default the core logger of Node will write to logs/nuby_express.log.
 
-It will be a dull ride indeed without content in the app.
+the ./run bash script will trigger launch as well. sudo ./run is the easiest way to kick open the app;
+that is, when developing. I reccommend using forever or an equivalent maintenance daemon in production.
 
-## Important Customization
+## Environmental requirements
 
-The session secret is embedded in the config.json file; please change it.
-Also, we are using node memory storage here for sessions.
-You might want to consider something more permanent for deployed sites with significant traffic.
-
-The database name is stored in your frame_config file as mongoose.db
-
-# Version Compatibility
-
-At the time of this writing this package is consistent with Mongoose 3.x and Nuby-Express 2.2.x,
-which is in turn consistent with Mongodb 2.0.x. All of this is running under Node 0.8.x.
-It has been tested under Mac OSX and Ubuntu. 
+* The elasticSearch in app/components/com_noogle/node_modules/vendor must have been initalized.
+* MongoDB must be running.
+* You must have a Node environment at 0.8.x (or greater?) in your system.
+* This has not been tested under Windows.
+* It should run on MacOSX and Ubuntu. 

@@ -11,9 +11,18 @@ on_input: function (rs){
 	self.on_process(rs, input.search, input.start, input.size);
 },
 
-on_process: function (rs,input){
+on_process: function (rs, search, start, size){
+    if (!size){
+        size = 500;
+    }
+    if (!start){
+        start = 0;
+    }
+    if (!search){
+        search = '';
+    }
 	var self = this;
-	self.on_output(rs,input)
+	self.on_output(rs, {params:{search: search, start: start, size: size}})
 },
 
 /* ****** GET ****** */

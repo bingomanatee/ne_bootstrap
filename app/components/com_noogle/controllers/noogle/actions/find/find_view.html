@@ -15,6 +15,7 @@
                 </button>
             </div>
         </div>
+        <% if (false) { %>
         <div class="row-fluid">
             <div class="span3">&nbsp;</div>
             <div class="span5"><label for="advanced_check">
@@ -61,7 +62,24 @@
     </div>
 </fieldset>
     </span>
+        <% } %>
     </form>
+
+    <div id="wait" class="modal fade in" role="dialog" data-backdrop="true" style="display: none; ">
+        <div class="modal-header">
+            <!-- a class="close" data-dismiss="modal">×</a -->
+            <h3>Searching for &quot;{{search}}&quot;</h3>
+        </div>
+        <div class="modal-body">
+            <p>Please wait while we look up your term.</p>
+        </div>
+        <!-- div class="modal-footer">
+            <a href="#" class="btn btn-success">Call to action</a>
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+        </div -->
+    </div>
+
+    <p>Messages: {{ messages.length }}, filtered messages: {{  (messages | filter: weighted_words()).length }}</p>
 
     <ul class="nav nav-tabs" id="noogle_tab">
         <li><a href="#tab_results" ng-click="tab='results'" data-toggle="tab">Results</a></li>
@@ -79,7 +97,7 @@
             <div class="well well-compact">
 
                 <span ng-repeat="u in users | filter: ww">
-                  <b ng-click="u.weighted=false">{{ u.username }}</b>
+                  <b ng-click="u.weighted=false">{{ u.username }}<sup>&nbsp;&nbsp;&times;</sup></b>
                     </span>
             </div>
 
@@ -99,7 +117,7 @@
             <div class="well well-compact">
 
                 <span ng-repeat="word in words | filter:ww">
-                  <b ng-click="word.weighted = false">{{ word.word }}</b>
+                  <b ng-click="word.weighted = false">{{ word.word }}<sup>&nbsp;&nbsp;&times;</sup></b>
                     </span>
             </div>
 
@@ -227,12 +245,7 @@
 
 
 </style>
+
 <script>
-    $(function () {
-        /*    $('#word_list').isotope({
-         // options
-         itemSelector : 'span',
-         layoutMode : 'fitRows'
-         }); */
-    })
+    var NOOGLE_CONFIG = <%- JSON.stringify(params) %>;
 </script>
