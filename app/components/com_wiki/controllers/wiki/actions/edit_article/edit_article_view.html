@@ -29,10 +29,16 @@
                     <li><a href="#tab_summary" data-toggle="tab">Summary</a></li>
                     <li><a href="#tab_content" data-toggle="tab">Content</a></li>
                     <li><a href="#tab_promotion" data-toggle="tab">Promotion</a></li>
+                    <li><a href="#tab_debug" data-toggle="tab">Debug</a></li>
                 </ul>
 
                 <div id="wiki_tab_content" class="tab-content" style="padding-left: 2em">
-                    <div class="tab-pane clearfix" id="tab_title">
+                    <div class="tab-pane clearfix" id="tab_debug">
+                        <pre>
+                            {{ article_json() }}
+                        </pre>
+                     </div>
+                        <div class="tab-pane clearfix" id="tab_title">
                         <h3>Title</h3>
                         <div class="row-fluid {{title_row_class}}">
                             <div class="span2">  <label class="control-label" for="inputTitle">

@@ -2,7 +2,7 @@ angular.module('scopes', ['scopesServices']);
 
 angular.module('scopesServices', ['ngResource']).factory('Scopes',
     function ($resource) {
-        return $resource('/wiki/article_rest/:scope/:article', {scope:"@scope", article:"@article"}, {
+        return $resource('/wiki/article_rest/:scope/:article', {scope:"@scope", article:"@name"}, {
             get:{method:'GET'},
             query:{method:'GET', isArray:true},
             add:{method:'POST' },
@@ -38,6 +38,10 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
      */
     var _original_article = null;
 
+    $scope.article_json = function(){
+        return JSON.stringify($scope.edit_article);
+    }
+
     $scope.update_article = function () {
         $scope.edit_article.promoted = $scope.promoted;
         console.log('updating article...', $scope.edit_article);
@@ -52,7 +56,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
                     var dest = "/wiki/a/" + art.scope + '/' + art.name + '?flash_info=' + encodeURI('Updated article');
                 }
                 console.log('dest: ' + dest);
-                document.location = dest;
+              //  document.location = dest;
             }
         });
     }
