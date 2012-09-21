@@ -56,7 +56,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
                     var dest = "/wiki/a/" + art.scope + '/' + art.name + '?flash_info=' + encodeURI('Updated article');
                 }
                 console.log('dest: ' + dest);
-              //  document.location = dest;
+                document.location = dest;
             }
         });
     }
