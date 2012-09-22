@@ -66,14 +66,19 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <% if (sidebar){%>
         <div class="span2">
-            <%- partial('sidebar.html', {sidebar: sidebar}) %>
+            <% if (menus.member){
+            %><%- partial('sidebar.html', {menu: menus.member}) %><%
+            };
+            if (menus.admin){
+            %><%- partial('sidebar.html', {menu: menus.admin}) %><%
+            }
+            if (menus.nav){
+            %><%- partial('sidebar.html', {menu: menus.nav}) %><%
+            }
+            %>
         </div>
         <div class="span10">
-        <% } else { %>
-        <div class="span12">
-        <% } // sidebar %>
 
             <% if (hero) {%>
             <%- partial('hero.html', {hero: hero}) %>
@@ -94,6 +99,9 @@
 
 </div>
 <!--/.fluid-container-->
+<!-- Modal -->
+<div class="modal" id="template_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none" >
+</div>
 <!--[if lt IE 7]>
 <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser
     today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better

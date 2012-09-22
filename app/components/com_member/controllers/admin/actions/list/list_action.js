@@ -18,7 +18,7 @@ module.exports = {
         var self = this;
         return self.on_get_input(rs);
 
-        this.models.member.can(rs, ['admin site'], function (err, can) {
+        this.models.member.can(rs, [ "admin members"], function (err, can) {
             if (err) {
                 self.emit('validate_error', rs, err);
             } else if (can) {

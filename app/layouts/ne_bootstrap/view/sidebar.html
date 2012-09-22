@@ -1,20 +1,30 @@
-<!-- -------- START sidebar well -------- -->
+<!-- -------- START sidebar well --------
+<%- JSON.stringify(menu, true, 3) %>
+        -->
 <div class="well sidebar-nav">
-    <ul class="nav nav-list"><%
-        sidebar.forEach(function(sidebar_item){ %>
-<li class="nav-header">
-<%- sidebar_item.title %>
-</li>
-<% sidebar_item.links.forEach(function(link){
-if (link.modal) {
-  %><li><%- partial('modal_link.html', {link: link}).replace(/\n/g, ' ') %><%- link.title %></a></li><%
-        } else if (link.link) {
-%><li><a href="<%- link.link %>"><%- link.title %></a></li><%
+    <ul class="nav nav-list">
+        <% if (menu.title){ %><li class="nav-header"><%= menu.title %></li><% }
+        menu.items.forEach(function(section){
+        if (section.label) {
+        %><li class="nav-header">
+        <%= section.label %>
+    </li><% }
+        if (section.links){
+        section.links.forEach(function(item){
+        if (item.type == 'label') {
+        %><li class=""><%- item.label %></li><%
+        } else if (item.type == 'link') {
+        %><li><a href="<%- item.link %>"><%= item.label %></a></li><%
+        } else if (item.type == 'modal') {
+        %><%- partial('modal_link.html', {item: item}).replace(/\n/g, ' ')  %><%
+        } // end if
+        }) // end items
         } else {
-%><li><%- link.title %></li><%
-        }// modal
- }) // end sidebar_item.links.foreach
- })// end sidebar.forEach
- %></ul>
+        %>(no items)<%
+        }
+        %>
+        <% }) // end section
+        %>
+    </ul>
 </div>
 <!-- -------- END sidebar well -------- -->

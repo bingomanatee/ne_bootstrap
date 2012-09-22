@@ -33,5 +33,25 @@
             "default":"My Company",
             "notes":"in the footer, by the copyright notice."
         }
+    ],
+
+    "menus":[
+        {
+            "name":"member",
+            "title":"Members"
+        },
+
+        {
+            "name":"admin",
+            "title":"Administer",
+            "weight":-1000,
+            "links":[
+                {
+                    "type":"link",
+                    "label":"Site Home"
+                }
+            ]
+        }
+
     ]
 }
