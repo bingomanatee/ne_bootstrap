@@ -3,6 +3,7 @@ var util = require('util');
 var fs = require('fs');
 var request = require('request');
 var elastic = require('elastic');
+var _DEBUG = false;
 
 /* *************** MODULE ********* */
 
@@ -17,17 +18,17 @@ module.exports = {
 
 
             elastic.status(function (err, body) {
-                console.log(body);
+                if (_DEBUG)           console.log(body);
                 if (err) {
                     console.log('error: %s', err.message);
                     if (/ECONNREFUSED/.test(err.message)) {
                         console.log('initializing... ');
                         elastic.init(function(err, out){
-                            console.log('initialization: %s', out);
+                            if (_DEBUG)        console.log('initialization: %s', out);
                             cb();
                         });
                     } else {
-                        console.log('err ignored: %s', err.message);
+                        if (_DEBUG)       console.log('err ignored: %s', err.message);
                         cb();
                     }
                 } else {
