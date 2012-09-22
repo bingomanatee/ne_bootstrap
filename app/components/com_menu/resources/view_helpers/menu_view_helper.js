@@ -8,7 +8,12 @@ function _weight(item) {
 }
 
 function _fetch_layout(rs, input) {
-    var name = input.layout_name;
+
+    if (input.hasOwnProperty('layout_name') && input.layout_name) {
+        var name = input.layout_name;
+    } else {
+        var name = rs.action.get_config('layout_name', 'NO LAYOUT')
+    }
 
     if (!name) {
         return false;
@@ -26,7 +31,12 @@ function _filter_menus(m) {
             items:[]
         }
     } else {
-        return m;
+        if (m.items) {
+            var items = m.items.slice(0);
+        } else {
+            var items = [];
+        }
+        return _.extend({}, m, {items:items});
     }
 }
 
@@ -37,12 +47,10 @@ var menu_view_helper = new NE.helpers.View({
     weight:100,
 
     init:function (rs, input, cb) {
+        if (_DEBUG)  console.log('starting menu view helper for %s', util.inspect(input));
         if (!rs) {
             throw new Error('no rs');
         }
-
-        //   console.log('NE --- MVH %s', util.inspect(NE));
-        var Gate = NE.deps.support.nakamura_gate;
 
         /* *************** MENUS PASSED THORIUGH FROM ACTIONS ****** */
 
@@ -53,16 +61,26 @@ var menu_view_helper = new NE.helpers.View({
         var layout = _fetch_layout(rs, input);
         if (layout) {
             var layout_menus = layout.direct_config('menus');
+            if (_DEBUG)  console.log('layout menus: %s', util.inspect(layout_menus));
             if (layout_menus) {
                 menus = menus.concat(_.map(layout_menus, _filter_menus));
             }
+        } else {
+            if (_DEBUG)  console.log('no layout');
         }
 
         if (!menus.length) {
+            if (_DEBUG) console.log('no menus');
+            if (!input.menus) {
+                input.menus = [];
+            }
+
             return cb();
         }
 
         /* **************** ENSURE UNQIUENESS OF MENUS BY NAME ********* */
+
+        console.log('initial menus: %s', JSON.stringify(menus))
 
         menus = _.reduce(menus, function (comp_menus, menu) {
             var dupe = comp_menus[menu.name];
@@ -77,66 +95,30 @@ var menu_view_helper = new NE.helpers.View({
 
         }, {});
 
+        console.log('deduped menus: %s', JSON.stringify(menus))
+
+        //   console.log('NE --- MVH %s', util.inspect(NE));
+        var Gate = NE.deps.support.nakamura_gate;
+
         var gate = Gate.create();
 
-        _.each(menus, function (site_menu, name) {
-            if (!_menus) {
-                _menus = rs.action.frame.get_resources('menu');
-            }
+        if (!_menus) {
+            _menus = rs.action.framework.get_resources('menu');
+        }
 
-            _menus.forEach(function (menu) {
-                if (_DEBUG)    console.log('getting items fom menu %s for site_menu %s',
-                    menu.name,
-                    site_menu.name);
-                if (menu.use_menu(rs, name)) {
-                    var latch = gate.latch(name + '.' + menu.name);
-                    menu.items(rs, name, function (err, menus) {
-                        if (_DEBUG) console.log('output for site_menu %s from menu %s: ', name, menu.name, JSON.stringify(menus));
-                        latch(null, menus);
-                    });
-                }
-            })
-
+        _.each(_menus, function (menu_resource) {
+            menu_resource.exec(rs, menus, gate.latch());
         });
 
+        gate.await(function () {
+            _.each(menus, function(menu){
+                menu.items = _.sortBy(menu.items, _weight);
+            });
 
-        gate.await(function (err, menu_items) {
-            // console.log('menu items: %s', JSON.stringify(menu_items));
-            if (err) {
-                console.log('menu error: %s', err.message);
-                cb(err);
-                //@TODO: way to abort request fron with in view helper?
-
-            } else {
-                if (_DEBUG) console.log('item *********** amalgam: %s', JSON.stringify(menu_items, true, 2))
-                if (_DEBUG) console.log('*************')
-                input.menus = _.reduce(menu_items,
-                    function (menus, items, key) {
-                        var item_menus = items[1];
-                        var menu_name = key.split('.')[0];
-                        if (_DEBUG)     console.log('%s (%s) REDUCING items: %s', key, menu_name, JSON.stringify(_.pluck(item_menus, 'label'), true, 3));
-
-
-                        var dest_menu = _.find(menus, function (m) {
-                            return m.name == menu_name
-                        });
-
-                        if (dest_menu) {
-                            dest_menu.items = _.sortBy(dest_menu.items.concat(item_menus), _weight);
-                        } else {
-                            throw new Error('cannot find menu ' + menu_name);
-                        }
-
-                        //    console.log(' *********** menu output: %s =============', JSON.stringify(menus))
-                        return menus;
-
-                    }, menus)
-            }
+            input.menus = menus;
+            cb();
         });
 
-        if (_DEBUG)    console.log('final menus %s', JSON.stringify(input.menus, true, 3));
-
-        cb();
     }
 
 });

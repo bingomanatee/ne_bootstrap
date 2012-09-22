@@ -44,40 +44,7 @@ var member_menu = new Menu({
     name:'user_menu',
     _member:true,
     _menu_names:['nav', 'member'],
-    _items:function (rs, mn, cb) {
-        try {
-
-            var member = rs.session('member');
-        } catch (err) {
-            console.log('session error: %s', err.message);
-            throw err;
-        }
-
-        if (!member) {
-            console.log('returning []')
-            return cb(null, [])
-        }
-
-        cb(null, [
-            {
-                label:'Member',
-                weight:-1000,
-                items:[
-                    {
-                        type:'label',
-                        label:'Logged in as <br />' + member.member_name
-                    },
-
-                    {
-                        type:'link',
-                        label:'Sign Out',
-                        link:'/sign_out'
-                    }
-
-                ]
-            }
-
-        ]);
+    _items:function (rs, input, cb) {
     }
 })
 

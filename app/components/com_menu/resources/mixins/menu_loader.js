@@ -23,6 +23,11 @@ module.exports = {
         var menu_handler = menu_handler_factory(frame);
         frame.reload([menu_handler], gate.latch(frame.path), frame);
 
-        gate.await(cb);
+        console.log('gate count: %s', gate.count);
+
+        gate.await(function(err, result){
+            console.log('menu loader done: ');
+            cb();
+        });
     }
 }
