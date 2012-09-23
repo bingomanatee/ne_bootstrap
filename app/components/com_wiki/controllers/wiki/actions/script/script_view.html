@@ -28,9 +28,15 @@
 
         function wiki_links(text, cb){
             do {
-                var hit = /\[\[([^\]]+)\]\]/.exec(text);
+                var hits = text.match(/\[\[([^\]]+)\]\]/g);
 
-                if (hit){
+                if (hits && hits.length){
+
+                    _.uniq(hits).forEach(function(hit){
+                        var parts = hit.exec(/\[\[([^:\]]+)(:([^\]]+))?\]\]/g);
+
+                    })
+
                     var holder = hit[0];
                     var term = hit[1].split(':');
                    var name = term.shift();

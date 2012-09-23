@@ -26,7 +26,7 @@ module.exports = {
                     if (err) {
                         self.emit('validate_error', rs, err);
                     } else if (can) {
-                        rs.flash('info',  util.format('There is not currently an article %s in scope %s -- creating a new article', input.article, input.scope));
+                        rs.flash('info', util.format('There is not currently an article %s in scope %s -- creating a new article', input.article, input.scope));
                         rs.go(util.format('/wiki/%s/%s/new', input.scope, input.article));
                     } else {
                         self.emit('input_error', rs,
@@ -50,10 +50,16 @@ module.exports = {
         }
     },
 
-    _on_input_error_go: '/',
+    _on_input_error_go:'/',
 
     on_process:function (rs, article) {
         var self = this;
-        self.on_output(rs, {article:article})
+        self.on_output(rs, {article:article, menus:[
+            {
+                name:'wiki',
+                title:'Wiki',
+                items:[]
+            }
+        ]})
     }
 }
