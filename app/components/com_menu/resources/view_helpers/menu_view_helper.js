@@ -72,7 +72,7 @@ var menu_view_helper = new NE.helpers.View({
         if (!menus.length) {
             if (_DEBUG) console.log('no menus');
             if (!input.menus) {
-                input.menus = [];
+                input.menus = {};
             }
 
             return cb();

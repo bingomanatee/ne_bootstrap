@@ -26,7 +26,7 @@ module.exports = {
             if (can) {
                 if (!menus['admin']){
                     self.add_menu_items(menus, 'nav', {
-                        weight:500,
+                        weight:-500,
                         links:[
                             {
                                 label:'Administer Site',
