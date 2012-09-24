@@ -20,9 +20,8 @@
                 </th>
                 <th>Linked From</th>
                 <th>Link To</th>
-                <th>
-                    &nbsp;
-                </th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
@@ -40,6 +39,10 @@
                 <td nowrap="nowrap">
                     <button class="btn btn-small nomargin" ng-click="edit_article(article)">
                         <i class="icon-edit"></i> Edit</button>
+                </td>
+                <td nowrap="nowrap">
+                    <button class="btn btn-small btn-danger nomargin" ng-show="!article.scope_root" ng-click="delete_article(article)">
+                        <i class="icon-trash"></i> Delete</button>
                 </td>
             </tr>
             </tbody>

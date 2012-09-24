@@ -122,7 +122,6 @@ module.exports = function (mongoose_inject) {
                 revise:function (article, new_data, author) {
                     this.preserve(article, new_data);
                     this.sign(article, author);
-                    this.link(article);
                     return article;
                 },
 

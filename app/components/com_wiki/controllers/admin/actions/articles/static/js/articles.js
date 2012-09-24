@@ -41,6 +41,9 @@ function ArticlesCtrl($scope, $filter, $compile, Articles) {
         }
     }
 
+    $scope.delete_article = function(art){
+        Articles.delete(art);
+    }
 
     $scope.view_article = function(art){
         if (art.scope_root){

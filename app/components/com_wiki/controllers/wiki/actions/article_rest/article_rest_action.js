@@ -77,11 +77,13 @@ module.exports = {
     on_post_process:function (rs, article) {
         var self = this;
         self.model().sign(article, rs.session('member'));
-        self.model().put(article, function(err, art_record){
-            if (err){
+        self.model().put(article, function (err, art_record) {
+            if (err) {
                 self.emit('process_error', rs, err);
             } else {
-                rs.send(art_record);
+                self.model().link(art_record, function () {
+                    rs.send(art_record);
+                });
             }
         })
     },
@@ -146,8 +148,12 @@ module.exports = {
 
             self.models.promote.promote(self.model().promote_basis(new_art), promote,
                 function (err, promotion) {
-                    //@TODO: do something with feedback.
-                    rs.send(j)
+                    console.log('linking article....');
+                    self.model().link(article, function () {
+                        console.log('sending data');
+                        rs.send(j)
+                    });
+
                 })
         }
 

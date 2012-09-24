@@ -14,6 +14,17 @@
         <% } %>
 
 <article style="display: none">
+    <% if (article.linked_from.length){%>
+    <div class="well">
+        <b>Linked From </b> <% article.linked_from.forEach(function(from_art){
+        if (from_art.name == from_art.scope){
+        %><a href="/wiki/s/<%- from_art.scope %>"><%- from_art.title ? from_art.title : from_art.name.replace(/_/g, ' ') %></a>
+        <% } else {
+        %><a href="/wiki/a/<%- from_art.scope %>/<%- from_art.name %>"><%- from_art.title ? from_art.title : from_art.name.replace(/_/g, ' ') %></a>
+        <% } // if scope.root
+         }) %>
+    </div>
+    <% } %>
     <div class="summary">
 <%- article.summary %>
     </div>

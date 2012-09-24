@@ -3,5 +3,5 @@
     "method":"*",
     "put_route":"*/article_rest",
     "post_route":"*/article_rest",
-    "delete_route":"*/article_rest"
+    "delete_route":"*/article_rest/:scope/:name"
 }

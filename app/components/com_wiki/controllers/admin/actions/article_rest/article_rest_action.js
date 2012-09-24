@@ -30,7 +30,7 @@ module.exports = {
         if (rs.req_props.scope) {
             q.where('scope').equals(rs.req_props.scope);
         }
-        q.exec(function(err, arts){
+        q.exec(function (err, arts) {
             self.on_get_process(rs, arts)
         })
     },
@@ -111,34 +111,45 @@ module.exports = {
      on_put_process:function (rs, input) {
      var self = this;
      rs.send(input)
-     },
+     }, */
 
-     /* ****** DELETE ****** *
+    /* ****** DELETE ****** */
 
-     on_delete_validate:function (rs) {
-     var self = this;
-     this.models.member.can(rs, ['create scope', 'edit any scope', 'delete any scope'], function (err, can) {
-     if (err) {
-     self.emit('validate_error', rs, err);
-     } else if (can) {
-     self.on_delete_input(rs)
-     } else {
-     self.emit('validate_error', rs, 'you are not authorized to manage scopes')
-     }
-     })
+    on_delete_validate:function (rs) {
+        var self = this;
 
-     },
+        this.models.member.can(rs, ['delete any article'], function (err, can) {
+            if (err) {
+                self.emit('validate_error', rs, err);
+            } else if (can) {
+                self.on_delete_input(rs)
+            } else {
+                self.emit('validate_error', rs, 'you are not authorized to delete articles')
+            }
+        })
 
-     on_delete_input:function (rs) {
-     var self = this;
-     var input = rs.req_props;
-     self.on_delete_process(rs, input)
-     },
+    },
 
-     on_delete_process:function (rs, input) {
-     var self = this;
-     rs.send(input)
-     },
-     */
+    on_delete_input:function (rs) {
+        var self = this;
+        var input = rs.req_props;
+        this.model().article(input.scope, input.name, function(err, art){
+            if (err){
+                rs.emit('delete_input', rs, err);
+            } else if (art){
+                self.on_delete_process(rs, art)
+            } else {
+                rs.emit('input_error', rs, 'cannot get article ' + input.name)
+            }
+        });
+    },
+
+    on_delete_process:function (rs, art) {
+        var self = this;
+        this.model().delete(art, function(){
+            rs.send(art)
+        }, true)
+    },
+
     _on_error_go:true
 }
