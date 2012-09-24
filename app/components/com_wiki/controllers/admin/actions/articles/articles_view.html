@@ -33,11 +33,11 @@
                 <td>{{ article.creator.member_name }}</td>
                 <td><div ng-repeat="art in article.linked_from">{{art.name}}</div></td>
                 <td><div ng-repeat="art in article.link_to">{{art.name}}</div></td>
-                <td>
+                <td nowrap="nowrap">
                     <button class="btn btn-small nomargin" ng-click="view_article(article)">
                         <i class="icon-search"></i> View</button>
                 </td>
-                <td>
+                <td nowrap="nowrap">
                     <button class="btn btn-small nomargin" ng-click="edit_article(article)">
                         <i class="icon-edit"></i> Edit</button>
                 </td>
