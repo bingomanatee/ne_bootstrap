@@ -1,7 +1,7 @@
-<a href="<%- link.link ? link.link: '#template_modal' %>" data-toggle="modal" onclick="$('<%- link.link ? link.link: '#template_modal' %>').load(
-'<%- link.modal %>',
+<a href="<%- item.link ? item.link: '#template_modal' %>" data-toggle="modal" onclick="$('<%- item.modal ? item.modal: '#template_modal' %>').load(
+'<%- item.link %>',
  function(){
- <% if (link.script) { %>
- $.getScript('<%- link.script %>');
-  <% } %>
-  }); return false">
+ <% if (item.script) { %>
+ $.getScript('<%- item.script %>');
+  <% } else { %> $('<%- item.modal ? item.modal: '#template_modal' %>').modal('show'); <%} %>
+  }); return false"><%- item.label %></a>

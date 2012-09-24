@@ -55,14 +55,24 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <% if (sidebar){%>
+        <% if (
+        (menus.nav && menus.nav.items.length) ||
+        (menus.member && menus.member.items.length)
+        ){%>
         <div class="span2">
-            <%- partial('sidebar.html', {sidebar: sidebar}) %>
+            <% if (menus.member){
+            %><%- partial('sidebar.html', {menu: menus.member}) %><%
+            };
+            if (menus.nav){
+            %><%- partial('sidebar.html', {menu: menus.nav}) %><%
+            }
+            %>
         </div>
         <div class="span10">
-        <% } else { %>
-        <div class="span12">
-        <% } // sidebar
+            <% } else { %>
+            <div class="span12">
+
+            <% } // sidebar
             %>
 
             <%- helpers.flash() %>

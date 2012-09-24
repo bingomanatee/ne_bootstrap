@@ -60,17 +60,19 @@
         (menus.member && menus.member.items.length)
         ){%>
         <div class="span2">
-            <% if (menus.member){%>
-            <%- partial('sidebar.html', {menu: menus.member}) %>
-            <% };
+            <% if (menus.member){
+            %><%- partial('sidebar.html', {menu: menus.member}) %><%
+            };
             if (menus.nav){
+            %><%- partial('sidebar.html', {menu: menus.nav}) %><%
             }
             %>
         </div>
         <div class="span10">
-        <% } else { %>
-        <div class="span12">
-        <% } // sidebar
+            <% } else { %>
+            <div class="span12">
+
+            <% } // sidebar
             %>
 
             <%- helpers.flash() %>
