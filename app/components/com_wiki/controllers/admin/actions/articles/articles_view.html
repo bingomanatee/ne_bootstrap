@@ -18,6 +18,8 @@
                 <th>
                     Creator
                 </th>
+                <th>Linked From</th>
+                <th>Link To</th>
                 <th>
                     &nbsp;
                 </th>
@@ -29,12 +31,14 @@
                 <td ng-bind-html-unsafe=" article | article_name "></td>
                 <td>{{article.title }}</td>
                 <td>{{ article.creator.member_name }}</td>
+                <td><div ng-repeat="art in article.linked_from">{{art.name}}</div></td>
+                <td><div ng-repeat="art in article.link_to">{{art.name}}</div></td>
                 <td>
-                    <button class="btn btn-small nomargin" ng-click="view_scope(article)">
+                    <button class="btn btn-small nomargin" ng-click="view_article(article)">
                         <i class="icon-search"></i> View</button>
                 </td>
                 <td>
-                    <button class="btn btn-small nomargin" ng-click="edit_scope(article)">
+                    <button class="btn btn-small nomargin" ng-click="edit_article(article)">
                         <i class="icon-edit"></i> Edit</button>
                 </td>
             </tr>
@@ -42,6 +46,7 @@
         </table>
 
         <button class="btn btn-primary" ng-click="add_article()" >Add Article</button>
+        <button class="btn" ng-click="update_links()" >Update Links</button>
     </div>
 </div>
 

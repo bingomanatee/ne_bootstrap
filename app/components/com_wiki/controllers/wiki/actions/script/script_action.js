@@ -1,4 +1,6 @@
 var scope_menu = require('parsers/scope_menu');
+var wiki_links = require('parsers/wiki_links');
+
 module.exports = {
 
 on_validate: function (rs){
@@ -17,8 +19,9 @@ on_process: function (rs,input){
     var sm = scope_menu.toString();
     console.log('scope menu: %s', sm);
     var scope = input.scope ? input.scope : false;
+    var wl = wiki_links.toString();
 
-	self.on_output(rs, {parsers: ['marked_cb', sm], scope: scope})
+	self.on_output(rs, {parsers: ['marked_cb', sm, wl], scope: scope})
 },
 
 /* ****** GET ****** */

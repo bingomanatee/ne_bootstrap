@@ -13,8 +13,7 @@ var _model;
 
 module.exports = function (mongoose_inject) {
 
-    if (_model) {
-    } else {
+    if (!_model) {
 
         if (!mongoose_inject) {
             mongoose_inject = NE.deps.mongoose;
@@ -32,13 +31,14 @@ module.exports = function (mongoose_inject) {
         var arch_fields = _.keys(arch_schema_def);
 
         var linked_from_schema_def = {
-            article:'string',
+            name:'string',
             scope:'string',
-            title: 'string'
+            title:'string'
         }
 
         var full_schema_def = _.extend({
             linked_from:[linked_from_schema_def],
+            link_to:[linked_from_schema_def],
             name:{type:'string', index:true},
             versions:[arch_schema_def],
             deleted:{type:'boolean', default:false},
@@ -99,53 +99,6 @@ module.exports = function (mongoose_inject) {
                     q.populate('author').populate('creator').exec(cb);
                 },
 
-                link:function (article, cb) {
-                    var self = this;
-
-                    function _re_link() {
-                        var link_parts = self.text_link_parts(article.content + article.summary);
-                        var gate2 = Gate.create();
-
-                        link_parts.forEach(function (link) {
-                            self.article(link.name, article.scope, function (err, linked_article) {
-                                if (linked_article.linked_from) {
-                                    linked_article.linked_from.push({name:link.name, scope:article.scope});
-                                } else {
-                                    linked_article.linked_from = [
-                                        {name:link.name, scope:article.scope}
-                                    ];
-                                }
-                                linked_article.markModifed('linked_from');
-                                linked_article.save(gate2.latch());
-                            });
-                        });
-
-                        gate2.await(cb);
-                    }
-
-                    var gate = Gate.create();
-
-                    // remove old links
-
-                    this.model.where('linked_from').elemMatch({name:article.name, scope:article.scope}).exec(
-                        function (err, docs) {
-                            docs.forEach(function (doc) {
-
-                                if (doc.linked_from.length) {
-                                    dos.linked_from = _.reject(doc.linked_from, function (item) {
-                                        return (item.scope == doc.scope) && (item.name == doc.name);
-                                    })
-                                    doc.markModifed('linked_from');
-                                    doc.save(gate.latch());
-                                }
-
-                            })
-
-                            gate.await(_re_link);
-                        }
-                    )
-                },
-
                 scopes:function (cb, full) {
                     var q = this.find({scope_root:true, deleted:false});
                     if (full) {
@@ -169,6 +122,7 @@ module.exports = function (mongoose_inject) {
                 revise:function (article, new_data, author) {
                     this.preserve(article, new_data);
                     this.sign(article, author);
+                    this.link(article);
                     return article;
                 },
 
@@ -233,7 +187,9 @@ module.exports = function (mongoose_inject) {
             }
             ,
             mongoose_inject
-        )
+        );
+
+        _model.link = require('model/wiki_article/link')(_model);
     }
     return _model;
 }
