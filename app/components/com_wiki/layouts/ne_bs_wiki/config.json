@@ -31,6 +31,12 @@
             "default":"My Wiki Company",
             "notes":"in the footer, by the copyright notice."
         }
-    ]
+    ],
+
+    "menus": [
+        {"name": "member",
+            "title": "Members"}
+        , {"name": "nav",
+            "title": "Menu"}]
 
 }

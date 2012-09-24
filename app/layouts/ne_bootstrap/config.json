@@ -33,9 +33,11 @@
         }
     ],
 
+
     "menus": [
         {"name": "member",
-        "title": "Members"}
-        ,"nav"]
+            "title": "Members"}
+        , {"name": "nav",
+            "title": "Menu"}]
 
 }

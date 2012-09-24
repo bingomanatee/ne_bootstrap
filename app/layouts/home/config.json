@@ -27,6 +27,7 @@
     "menus": [
         {"name": "member",
             "title": "Members"}
-        ,"nav"]
+        , {"name": "nav",
+        "title": "Menu"}]
 
 }
