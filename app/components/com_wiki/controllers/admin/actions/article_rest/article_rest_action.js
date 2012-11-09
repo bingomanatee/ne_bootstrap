@@ -65,6 +65,7 @@ module.exports = {
 
     on_post_process:function (rs, article) {
         var self = this;
+        self.model().set_id(article);
         var promote = article.promoted;
         delete article.promoted;
 

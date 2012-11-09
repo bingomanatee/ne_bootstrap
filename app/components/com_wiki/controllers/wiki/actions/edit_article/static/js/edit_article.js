@@ -9,9 +9,16 @@ angular.module('scopesServices', ['ngResource']).factory('Scopes',
             update:{method:'PUT' },
             delete:{method:'DELETE'}
         });
+    }).factory('Scope_tags', function ($resource) {
+        return $resource('/wiki/scope_tags/:scope',
+            {scope:'@scope'}, {
+                query:{method:'GET'}
+            })
     });
-
-function ScopesCtrl($scope, $filter, $compile, Scopes) {
+/*
+ note - article is a global variable
+ */
+function ScopesCtrl($scope, $filter, $compile, Scopes, Scope_tags) {
 
     /* *************** MODEL ************************** */
 
@@ -22,9 +29,51 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
 
         function (article) {
             console.log('loading article ', article);
+            if (!article.tags) {
+                article.tags = [];
+            }
             _original_article = _.clone(article);
+            _original_article.tags = article.tags.slice(0);
         }
     );
+    Scope_tags.query(article, function (tags) {
+        console.log("SCOPE TAGS:", tags);
+        $scope.scope_tags = tags.tags;
+    });
+
+    $scope.cancel_edit = function () {
+        document.location = '/wiki/a/' + article.scope + '/' + article.name
+    }
+
+    $scope.has_tag = function(tag){
+        return _.any($scope.edit_article.tags, function(t){
+            return t == tag;
+        })
+    }
+
+    /* *************** TAGS *************************** */
+
+    $scope.add_tag = function(new_tag){
+        if (new_tag){
+            $scope.edit_article.tags.push(new_tag.toLowerCase());
+        } else if ($scope.new_tag){
+            $scope.edit_article.tags.push($scope.new_tag);
+            $scope.new_tag = '';
+        }
+       $scope.edit_article.tags = _.uniq($scope.edit_article.tags);
+    }
+
+    $scope.remove_tag = function(rem_tag){
+        $scope.edit_article.tags = _.reject($scope.edit_article.tags, function(t){
+            return t == rem_tag;
+        })
+    }
+
+    $scope.$watch('new_tag', function(t){
+        if (t && (!(t.toLowerCase() == t))){
+            $scope.new_tag =  t.toLowerCase();
+        }
+    })
 
     /* *************** TRACKING CHANGES *************** *
 
@@ -38,13 +87,14 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
      */
     var _original_article = null;
 
-    $scope.article_json = function(){
+    $scope.article_json = function () {
         return JSON.stringify($scope.edit_article);
     }
 
     $scope.update_article = function () {
         $scope.edit_article.promoted = $scope.promoted;
-        console.log('updating article...', $scope.edit_article);
+       //  console.log('updating article...', $scope.edit_article);
+
         Scopes.update($scope.edit_article, function (art) {
             console.log('update article result: ', art);
             if (art.error) {
@@ -148,7 +198,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
                 return dd;
             }, {});
 
-            dd.day = dd.day.replace(/^0/,'');
+            dd.day = dd.day.replace(/^0/, '');
             dd.month = dd.month.replace(/^0/, '');
 
             dd.mn = _mns[parseInt(dd.month)];
@@ -212,7 +262,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
                 $scope.summary_row_class = 'control-group';
             }
         }
-        wiki(summary, function (err, h) {
+        wiki(summary, $scope.edit_article, function (err, h) {
             if (err) {
                 return // console.log('error in wiki: ', err);
             } else {
@@ -242,7 +292,7 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
                 $scope.content_row_class = 'control-group';
             }
         }
-        var h = wiki(content, function (err, h) {
+        var h = wiki(content, $scope.edit_article, function (err, h) {
             if (err) {
                 return // console.log('error in wiki: ', err);
             } else {
@@ -256,6 +306,6 @@ function ScopesCtrl($scope, $filter, $compile, Scopes) {
 
 }
 
-ScopesCtrl.$inject = ['$scope', '$filter', '$compile', 'Scopes'];
+ScopesCtrl.$inject = ['$scope', '$filter', '$compile', 'Scopes', 'Scope_tags'];
 
 

@@ -1,0 +1,13 @@
+{
+	"layout_name":"html",
+	"tasks":[
+		"create slideshow",
+		"create slide",
+		"delete slideshow",
+		"delete slide",
+		"edit slideshow",
+		"edit slide",
+		"edit own slide"
+	]
+
+}

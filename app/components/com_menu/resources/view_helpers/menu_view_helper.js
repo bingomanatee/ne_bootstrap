@@ -80,7 +80,7 @@ var menu_view_helper = new NE.helpers.View({
 
         /* **************** ENSURE UNQIUENESS OF MENUS BY NAME ********* */
 
-        console.log('initial menus: %s', JSON.stringify(menus))
+      if (_DEBUG)  console.log('initial menus: %s', JSON.stringify(menus))
 
         menus = _.reduce(menus, function (comp_menus, menu) {
             var dupe = comp_menus[menu.name];
@@ -95,7 +95,7 @@ var menu_view_helper = new NE.helpers.View({
 
         }, {});
 
-        console.log('deduped menus: %s', JSON.stringify(menus))
+       if (_DEBUG) console.log('deduped menus: %s', JSON.stringify(menus))
 
         //   console.log('NE --- MVH %s', util.inspect(NE));
         var Gate = NE.deps.support.nakamura_gate;
@@ -107,7 +107,7 @@ var menu_view_helper = new NE.helpers.View({
         }
 
         _.each(_menus, function (menu_resource) {
-            menu_resource.exec(rs, menus, gate.latch());
+            menu_resource.exec(rs, menus, gate.latch(), input);
         });
 
         gate.await(function () {

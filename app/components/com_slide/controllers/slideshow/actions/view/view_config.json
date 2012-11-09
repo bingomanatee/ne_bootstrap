@@ -1,0 +1,8 @@
+{
+	"route":"*/view/:_id",
+	"method":"get",
+	"layout_name":"impress",
+	"javascript": [
+		"/impress/js/impress.js"
+	]
+}

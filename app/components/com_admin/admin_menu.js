@@ -14,9 +14,19 @@ module.exports = {
            weight: 0,
             links: [
                 {
+                    label: 'Site Home',
+                    type: 'link',
+                    link: '/'
+                },
+                {
                     label: 'Admin Home',
                     type: 'link',
                     link: '/admin/home'
+                },
+                {
+                    label: 'Options',
+                    type: 'link',
+                    link: '/admin/options'
                 }
 
             ]
@@ -26,7 +36,7 @@ module.exports = {
             if (can) {
                 if (!menus['admin']){
                     self.add_menu_items(menus, 'nav', {
-                        weight:-500,
+                        weight:-10,
                         links:[
                             {
                                 label:'Administer Site',
